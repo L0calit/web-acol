@@ -30,7 +30,12 @@
                                 </tr>
                             </c:forEach>                            
                         </table>
-                        <a href="controleurMairie?action=regime&view=ajouter">Ajouter</a>
+                          <form method="get" action="controleurMairie" accept-charset="UTF-8">
+                            Regime à ajouter : <input type="text" name="regime"/>
+                            <input type="submit" name="Ajouter" />
+                            <!-- Pour indiquer au contrôleur quelle action faire, on utilise un champ caché -->
+                            <input type="hidden" name="action" value="regimeAjouter" />
+                          </form>
                     </td>
                 </tr>
             </tbody>

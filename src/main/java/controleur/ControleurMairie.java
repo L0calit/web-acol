@@ -53,8 +53,8 @@ public class ControleurMairie extends HttpServlet {
             List<String> regimes = regimeDAO.getListeRegime();
             request.setAttribute("regimes", regimes);
             request.getRequestDispatcher("/WEB-INF/mairie.jsp").forward(request, response);
-        } else if (action.equals("regime")) {
-            regimeDAO.ajouterRegime("Sans porc");
+        } else if (action.equals("regimeAjouter")) {
+            regimeDAO.ajouterRegime(request.getParameter("regime"));
             List<String> regimes = regimeDAO.getListeRegime();
             request.setAttribute("regimes", regimes);
             request.getRequestDispatcher("/WEB-INF/mairie.jsp").forward(request, response);
