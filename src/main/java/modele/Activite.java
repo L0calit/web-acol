@@ -15,21 +15,22 @@ import java.util.List;
 public class Activite {
     private String nom;
     private List<String> classe;
-    private String jour;
+    private String creneaux;
+    private int prix;
+    private int effectif;
 
-    public Activite(String nom, List<String> classe, String jour) {
+    public Activite(String nom, List<String> classe, String creneaux, int prix, int effectif) {
         this.nom = nom;
         this.classe = classe;
-        this.jour = jour;
+        this.creneaux = creneaux;
+        this.prix = prix;
+        this.effectif = effectif;
     }
 
     public List<String> getClasse() {
         return classe;
     }
 
-    public String getJour() {
-        return jour;
-    }
 
     public String getNom() {
         return nom;
@@ -37,7 +38,7 @@ public class Activite {
 
     @Override
     public String toString() {
-        return jour + ":" + nom + "("+ classe.toString() + ")";
+        return creneaux + ":" + nom + "("+ classe.toString() + ")";
     }
     
 }
