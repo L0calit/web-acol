@@ -5,6 +5,7 @@
  */
 package controleur;
 
+import dao.ActiviteDAO;
 import dao.DAOException;
 import dao.RegimeDAO;
 import java.io.*;
@@ -15,6 +16,7 @@ import javax.servlet.*;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import javax.sql.DataSource;
+import modele.Activite;
 
 /**
  * Le contrôleur de l'application.
@@ -24,8 +26,7 @@ public class ControleurMairie extends HttpServlet {
 
     @Resource(name = "jdbc/bibliography")
     private DataSource ds;
-    RegimeDAO regimeDAO = new RegimeDAO(ds);
-    
+
     /* pages d’erreurs */
     private void invalidParameters(HttpServletRequest request,
             HttpServletResponse response) throws ServletException, IOException {
@@ -41,12 +42,14 @@ public class ControleurMairie extends HttpServlet {
     }
   
     /**
-     * Actions possibles en GET : 
+     * Actions possibles en GET : Supprimer Regime, Ajouter Regime
      */
     public void doGet(HttpServletRequest request,
             HttpServletResponse response)
             throws IOException, ServletException {
         request.setCharacterEncoding("UTF-8");
+        RegimeDAO regimeDAO = new RegimeDAO(ds);
+        ActiviteDAO activiteDAO = new ActiviteDAO(ds);
         String action = request.getParameter("action");
         if (action.equals("regimeSupprimer")) {
             regimeDAO.supprimerRegime(request.getParameter("regime"));
@@ -69,13 +72,17 @@ public class ControleurMairie extends HttpServlet {
             throws IOException, ServletException {
         request.setCharacterEncoding("UTF-8");
         String action = request.getParameter("action");
+        RegimeDAO regimeDAO = new RegimeDAO(ds);
+        ActiviteDAO activiteDAO = new ActiviteDAO(ds);
         if (action == null) {
             invalidParameters(request, response);
             return;
         } else if (action.equals("connexion")) {
             // tester si mdp et login corrects
             List<String> regimes = regimeDAO.getListeRegime();
+            List<Activite> activites = activiteDAO.getListeActivite();
             request.setAttribute("regimes", regimes);
+            request.setAttribute("activites", activites);
             request.getRequestDispatcher("/WEB-INF/mairie.jsp").forward(request, response);
         }
 

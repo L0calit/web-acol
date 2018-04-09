@@ -26,18 +26,19 @@
             </tr>
             <c:forEach items="${activites}" var="activite">
                 <tr>
-                    <td>${activite.nom}</td>
-                    <td>${activite.creneaux}</td>
-                    <td>${activite.classe}</td>
-                    <td>${activite.prix}</td>
-                    <td>${activite.effectif}</td>
-                    <td><a href="controleurMairie?action=activiteSupprimer&activite=${activite}">supprimer</a></td>
+                    <td>${activite.getNom()}</td>
+                    <td>${activite.getCreneaux()}</td>
+                    <td>${activite.getClasse()}</td>
+                    <td>${activite.getPrix()}</td>
+                    <td>${activite.getEffectif()}</td>
+                    <td><a href="controleurMairie?action=activiteSupprimer&actiNom=${activite.getNom()}&actiCreneaux=${activite.getCreneaux()}">supprimer</a></td>
                 </tr>
             </c:forEach>
         </table>
         <br/>
         <form method="get" action="controleurMairie" accept-charset="UTF-8">
-            Nom de l'activité : <input type="text" name="nom"/>
+            Nom de l'activité : <input type="text" name="nom"/><br/>
+            Creneaux de l'activite : <input type='text' name="creneaux" />
             <input type="submit" value="Ajouter" />
             <!-- Pour indiquer au contrôleur quelle action faire, on utilise un champ caché -->
             <input type="hidden" name="action" value="regimeAjouter" />

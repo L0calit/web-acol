@@ -27,8 +27,20 @@ public class Activite {
         this.effectif = effectif;
     }
 
-    public List<String> getClasse() {
-        return classe;
+    public String getCreneaux() {
+        return creneaux;
+    }
+
+    public int getEffectif() {
+        return effectif;
+    }
+
+    public int getPrix() {
+        return prix;
+    }
+
+    public String getClasse() {
+        return classe.toString();
     }
 
 
