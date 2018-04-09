@@ -2,6 +2,7 @@ package controleur;
 
 import dao.DAOException;
 import java.io.IOException;
+import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -42,5 +43,24 @@ public class ControleurParent extends HttpServlet {
         e.printStackTrace(); // permet d’avoir le détail de l’erreur dans catalina.out
         request.setAttribute("erreurMessage", e.getMessage());
         request.getRequestDispatcher("/WEB-INF/bdErreur.jsp").forward(request, response);
+    }
+    
+        /**
+     * Actions possibles en POST : connexion
+     */
+    public void doPost(HttpServletRequest request,
+            HttpServletResponse response)
+            throws IOException, ServletException {
+        request.setCharacterEncoding("UTF-8");
+        String action = request.getParameter("action");
+        if (action == null) {
+            invalidParameters(request, response);
+            return;
+        } else if (action.equals("connexion")) {
+            // tester si mdp et login corrects
+            request.getRequestDispatcher("/WEB-INF/parent.jsp").forward(request, response);
+        }
+
+
     }
 }
