@@ -14,40 +14,51 @@
     </head>
     <body>
         <h1>Vous êtes bien connectés</h1>
+        <!-- Afficher le catalogue des activités -->
+        <h2>Activités</h2>
         <table border="1">
-            <tbody>
+            <tr>
+                <th>Nom</th>
+                <th>Créneaux</th>
+                <th>Classe</th>
+                <th>Prix</th>
+                <th>Effectif</th>
+            </tr>
+            <c:forEach items="${activites}" var="activite">
                 <tr>
-                    <td>
-                        <!-- Afficher le catalogue des activités -->
-                        <table>
-                            <c:forEach items="${activites}" var="activite">
-                                <tr>
-                                    <td>${activite.jour}</td>
-                                    <td><a href="controleurMairie?action=activiteSupprimer&activite=${activite}">supprimer</a></td>
-                                </tr>
-                            </c:forEach>                            
-                        </table>
-                    </td>
-                    <td>
-                        <!-- Afficher les regimes -->
-                        <table>
-                            <c:forEach items="${regimes}" var="regime">
-                                <tr>
-                                    <td>${regime}</td>
-                                    <td><a href="controleurMairie?action=regimeSupprimer&regime=${regime}">supprimer</a></td>
-                                </tr>
-                            </c:forEach>                            
-                        </table>
-                          <form method="get" action="controleurMairie" accept-charset="UTF-8">
-                            Regime à ajouter : <input type="text" name="regime"/>
-                            <input type="submit" value="Ajouter" />
-                            <!-- Pour indiquer au contrôleur quelle action faire, on utilise un champ caché -->
-                            <input type="hidden" name="action" value="regimeAjouter" />
-                          </form>
-                    </td>
+                    <td>${activite.nom}</td>
+                    <td>${activite.creneaux}</td>
+                    <td>${activite.classe}</td>
+                    <td>${activite.prix}</td>
+                    <td>${activite.effectif}</td>
+                    <td><a href="controleurMairie?action=activiteSupprimer&activite=${activite}">supprimer</a></td>
                 </tr>
-            </tbody>
+            </c:forEach>
         </table>
+        <br/>
+        <form method="get" action="controleurMairie" accept-charset="UTF-8">
+            Nom de l'activité : <input type="text" name="nom"/>
+            <input type="submit" value="Ajouter" />
+            <!-- Pour indiquer au contrôleur quelle action faire, on utilise un champ caché -->
+            <input type="hidden" name="action" value="regimeAjouter" />
+        </form>
+        <!-- Afficher les regimes -->
+        <h2>Regime</h2>
+        <table border="1">
+            <c:forEach items="${regimes}" var="regime">
+                <tr>
+                    <td>${regime}</td>
+                    <td><a href="controleurMairie?action=regimeSupprimer&regime=${regime}">supprimer</a></td>
+                </tr>
+            </c:forEach>                            
+        </table>
+        <br/>
+          <form method="get" action="controleurMairie" accept-charset="UTF-8">
+            Regime à ajouter : <input type="text" name="regime"/>
+            <input type="submit" value="Ajouter" />
+            <!-- Pour indiquer au contrôleur quelle action faire, on utilise un champ caché -->
+            <input type="hidden" name="action" value="regimeAjouter" />
+          </form>
 
     </body>
 </html>

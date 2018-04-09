@@ -24,7 +24,8 @@ public class ControleurMairie extends HttpServlet {
 
     @Resource(name = "jdbc/bibliography")
     private DataSource ds;
-
+    RegimeDAO regimeDAO = new RegimeDAO(ds);
+    
     /* pages d’erreurs */
     private void invalidParameters(HttpServletRequest request,
             HttpServletResponse response) throws ServletException, IOException {
@@ -45,7 +46,6 @@ public class ControleurMairie extends HttpServlet {
     public void doGet(HttpServletRequest request,
             HttpServletResponse response)
             throws IOException, ServletException {
-        RegimeDAO regimeDAO = new RegimeDAO(ds);
         request.setCharacterEncoding("UTF-8");
         String action = request.getParameter("action");
         if (action.equals("regimeSupprimer")) {
@@ -67,7 +67,6 @@ public class ControleurMairie extends HttpServlet {
     public void doPost(HttpServletRequest request,
             HttpServletResponse response)
             throws IOException, ServletException {
-        RegimeDAO regimeDAO = new RegimeDAO(ds);
         request.setCharacterEncoding("UTF-8");
         String action = request.getParameter("action");
         if (action == null) {
