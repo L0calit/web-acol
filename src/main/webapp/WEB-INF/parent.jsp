@@ -25,13 +25,13 @@
                         cliquable et qui renvoit vers la fiche d'un enfant
                         + possibilité d'ajouter ou supprimer ou modifier un enfant-->
                         <table>
-                            <c:forEach items="${enfants}" var="prenom">
+                            <!--<c:forEach items="${enfants}" var="prenom">
                                 <tr>
                                     <td>${prenom}</td>
                                     <td><a href="controleurParent?action=enfantModifier&enfant=${prenom}">modifier</a></td>
                                     <td><a href="controleurParent?action=enfantSupprimer&enfant=${prenom}">supprimer</a></td>
                                 </tr>
-                            </c:forEach>                            
+                            </c:forEach>     -->                       
                         </table>
                     </td>
                     <td>

@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author boussanl
  */
-public class Activite {
+public class Activite extends Prestation{
     private String nom;
     private List<String> classe;
     private String creneaux;
