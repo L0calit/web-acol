@@ -78,6 +78,24 @@
             <!-- Pour indiquer au contrôleur quelle action faire, on utilise un champ caché -->
             <input type="hidden" name="action" value="regimeAjouter" />
           </form>
-
+        
+        <h2>Periode</h2>
+        <table border="1">
+            <c:forEach items="${periodes}" var="periode">
+                <tr>
+                    <td> Date début :${periode.getDateDebut()}</td>
+                    <td> Date fin :${periode.getDateFin()}</td>
+                    <td><a href="controleurMairie?action=periodeSupprimer&dateDebut=${periode.getDateDebut()}&dateFin=${periode.getDateFin()}">supprimer</a></td>
+                </tr>
+            </c:forEach> 
+        </table>
+        <h3>Ajouter une période</h3>
+          <form method="get" action="controleurMairie" accept-charset="UTF-8">
+            Date début (format AAAA-MM-JJ) : <input type="date" name="dateDebut"/> <br/>
+            Date fin (format AAAA-MM-JJ) : <input type="date" name="dateFin"/> <br/>
+            <input type="submit" value="Ajouter" />
+            <!-- Pour indiquer au contrôleur quelle action faire, on utilise un champ caché -->
+            <input type="hidden" name="action" value="periodeAjouter" />
+          </form>
     </body>
 </html>
