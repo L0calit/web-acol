@@ -10,9 +10,28 @@ package modele;
  * @author bernnico
  */
 public class Cantine {
-    private boolean lundi;
-    private boolean mardi;
-    private boolean mercredi;
-    private boolean jeudi;
-    private boolean vendredi;
+    private boolean lundi = false;
+    private boolean mardi = false;
+    private boolean mercredi = false;
+    private boolean jeudi = false;
+    private boolean vendredi = false;
+
+    public Cantine(String nom) {
+        String[] jourDiviser = nom.split("/");
+        for (String jour : jourDiviser) {
+            if (jour.equals("lu")) {
+                lundi = true;
+            } else if (jour.equals("ma")) {
+                mardi = true;
+            } else if (jour.equals("me")) {
+                mercredi = true;
+            } else if (jour.equals("je")) {
+                jeudi = true;
+            } else if (jour.equals("ve")) {
+                vendredi = true;
+            }
+        }
+    }
+    
+    
 }

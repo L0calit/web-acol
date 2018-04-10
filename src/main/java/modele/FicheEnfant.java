@@ -18,4 +18,17 @@ public class FicheEnfant extends Fiche {
     private FicheParent parents;
     private Cantine cantine;
     private Prestation prestation;
+
+    public FicheEnfant(String sexe, String classe, String dateNaissance, String divers, String regime, FicheParent parents, Cantine cantine, Prestation prestation, String nom, String prenom) {
+        super(nom, prenom);
+        this.sexe = sexe;
+        this.classe = classe;
+        this.dateNaissance = dateNaissance;
+        this.divers = divers;
+        this.regime = regime;
+        this.parents = parents;
+        this.cantine = cantine;
+        this.prestation = prestation;
+    }
+  
 }

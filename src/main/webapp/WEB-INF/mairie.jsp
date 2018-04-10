@@ -41,7 +41,7 @@
             Creneaux de l'activite : <input type='text' name="creneaux" />
             <input type="submit" value="Ajouter" />
             <!-- Pour indiquer au contrôleur quelle action faire, on utilise un champ caché -->
-            <input type="hidden" name="action" value="regimeAjouter" />
+            <input type="hidden" name="action" value="activiteAjouter" />
         </form>
         <!-- Afficher les regimes -->
         <h2>Regime</h2>

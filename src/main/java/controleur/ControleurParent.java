@@ -1,6 +1,7 @@
 package controleur;
 
 import dao.DAOException;
+import dao.ParentDAO;
 import java.io.IOException;
 import java.util.List;
 import javax.annotation.Resource;
@@ -10,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
+import modele.FicheParent;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -53,12 +55,21 @@ public class ControleurParent extends HttpServlet {
             throws IOException, ServletException {
         request.setCharacterEncoding("UTF-8");
         String action = request.getParameter("action");
+        ParentDAO parentDAO = new ParentDAO(ds);
         if (action == null) {
             invalidParameters(request, response);
             return;
         } else if (action.equals("connexion")) {
             // tester si mdp et login corrects
-            request.getRequestDispatcher("/WEB-INF/parent.jsp").forward(request, response);
+            String login = request.getParameter("login");
+            String mdp = request.getParameter("password");
+            if (parentDAO.verify(login, mdp)) {
+                FicheParent ficheParent = parentDAO.getFicheParent("coude");
+                request.setAttribute("parent", ficheParent);
+                request.getRequestDispatcher("/WEB-INF/parent.jsp").forward(request, response);
+            } else {
+                request.getRequestDispatcher("/WEB-INF/parent.jsp").forward(request, response);
+            }
         }
 
 
