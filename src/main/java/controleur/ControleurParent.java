@@ -76,11 +76,14 @@ public class ControleurParent extends HttpServlet {
             request.setAttribute("ficheParent", ancienneFicheParent);
             request.getRequestDispatcher("/WEB-INF/modifParent.jsp").forward(request, response);
         } else if (action.equals("modifInfo")) {
-            String newLogin = request.getParameter("login");
-            String newMdp = request.getParameter("motdepasse");
             String newAdresse = request.getParameter("adresse");
             String newNom = request.getParameter("nom");
             String newPrenom = request.getParameter("prenom");
+            String loginParent = request.getParameter("login");
+            parentDAO.modifierInfo(newAdresse, newNom, newPrenom, loginParent);
+            FicheParent ficheParent = parentDAO.getFicheParent(loginParent);
+            request.setAttribute("parent", ficheParent);
+            request.getRequestDispatcher("/WEB-INF/parent.jsp").forward(request, response);
         }
 
     }
