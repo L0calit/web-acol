@@ -44,7 +44,7 @@
                         <table>
                             <c:forEach items="${parent.getEnfants()}" var="enfant">
                                 <tr>
-                                    <td>${enfant.getPrenom()}</td>
+                                    <td><a href="controleurParent?action=enfantInfo&enfant=${enfant.getPrenom()}&loginParent=${parent.getLogin()}">${enfant.getPrenom()}</a></td>
                                     <td><a href="controleurParent?action=enfantSupprimer&enfant=${enfant.getPrenom()}&loginParent=${parent.getLogin()}">supprimer</a></td>
                                 </tr>
                             </c:forEach>                   
@@ -59,4 +59,7 @@
             </tbody>
         </table>
     </body>
+       <form>
+           <a href="controleurParent?action=logout"><input type="button" value="LogOut"></a>
+        </form>
 </html>

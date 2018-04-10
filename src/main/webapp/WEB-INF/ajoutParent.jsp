@@ -34,5 +34,8 @@
           </tr>
       </tbody>
   </table>
+        <form>
+            <input type="button" value="Annuler" onclick="history.go(-1)">
+        </form>
     </body>
 </html>

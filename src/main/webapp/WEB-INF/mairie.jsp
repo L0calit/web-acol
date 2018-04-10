@@ -133,4 +133,7 @@
                     <input type="hidden" name="action" value="creationCompteMairie" />
                   </form>
     </body>
+           <form>
+           <a href="controleurParent?action=logout"><input type="button" value="LogOut"></a>
+        </form>
 </html>
