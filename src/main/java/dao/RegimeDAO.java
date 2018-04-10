@@ -70,4 +70,5 @@ public class RegimeDAO extends AbstractDataBaseDAO {
             throw new DAOException("Erreur BD " + e.getMessage(), e);
         }
     }
+    
 }

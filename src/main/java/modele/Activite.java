@@ -18,13 +18,17 @@ public class Activite extends Prestation{
     private String creneaux;
     private int prix;
     private int effectif;
+    private String accompagnateur1;
+    private String accompagnateur2;
 
-    public Activite(String nom, List<String> classe, String creneaux, int prix, int effectif) {
+    public Activite(String nom, List<String> classe, String creneaux, int prix, int effectif, String mail1, String mail2) {
         this.nom = nom;
         this.classe = classe;
         this.creneaux = creneaux;
         this.prix = prix;
         this.effectif = effectif;
+        this.accompagnateur1 = mail1;
+        this.accompagnateur2 = mail2;
     }
 
     public String getCreneaux() {
@@ -46,6 +50,14 @@ public class Activite extends Prestation{
 
     public String getNom() {
         return nom;
+    }
+        
+    public String getAccompagnateur1() {
+        return accompagnateur1;
+    }
+
+    public String getAccompagnateur2() {
+        return accompagnateur2;
     }
 
     @Override

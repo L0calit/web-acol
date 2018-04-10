@@ -31,17 +31,32 @@
                     <td>${activite.getClasse()}</td>
                     <td>${activite.getPrix()}</td>
                     <td>${activite.getEffectif()}</td>
+                    <td>${activite.getAccompagnateur1()}</td>
+                    <td>${activite.getAccompagnateur2()}</td>
                     <td><a href="controleurMairie?action=activiteSupprimer&actiNom=${activite.getNom()}&actiCreneaux=${activite.getCreneaux()}">supprimer</a></td>
                 </tr>
             </c:forEach>
         </table>
         <br/>
+        <h3>Ajouter une activité</h3>
         <form method="get" action="controleurMairie" accept-charset="UTF-8">
-            Nom de l'activité : <input type="text" name="nom"/><br/>
+            Nom de l'activité : <input type="text" name="nom"/>
+            <br/>
             Creneaux de l'activite : <input type='text' name="creneaux" />
+            <br/>
+            Classe(s) concernées : <input type='text' name="classes" />
+            <br/>
+            Prix de l'activité : <input type='text' name="prix" />
+            <br/>
+            Effectif de l'activité : <input type='text' name="effectif" />
+            <br/>
+            Mail de l'accompagnateur1 : <input type='text' name="mail1" />
+            <br/>
+            Mail de l'accompagnateur2: <input type='text' name="mail2" />
+            <br/>
             <input type="submit" value="Ajouter" />
             <!-- Pour indiquer au contrôleur quelle action faire, on utilise un champ caché -->
-            <input type="hidden" name="action" value="regimeAjouter" />
+            <input type="hidden" name="action" value="activiteAjouter" />
         </form>
         <!-- Afficher les regimes -->
         <h2>Regime</h2>
@@ -54,6 +69,7 @@
             </c:forEach>                            
         </table>
         <br/>
+        <h3>Ajouter un régime</h3>
           <form method="get" action="controleurMairie" accept-charset="UTF-8">
             Regime à ajouter : <input type="text" name="regime"/>
             <input type="submit" value="Ajouter" />
