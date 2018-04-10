@@ -65,8 +65,8 @@ public class ControleurMairie extends HttpServlet {
             request.getRequestDispatcher("/WEB-INF/mairie.jsp").forward(request, response);
         } else if (action.equals("activiteAjouter")) {
             activiteDAO.ajouterActivite(request.getParameter("nom"), request.getParameter("creneaux"),
-                                         request.getParameter("classes"), request.getParameter("prix"),
-                                          request.getParameter("effectif"), request.getParameter("mail1"),
+                                         request.getParameter("classes"), Integer.parseInt(request.getParameter("prix")),
+                                          Integer.parseInt(request.getParameter("effectif")), request.getParameter("mail1"),
                                           request.getParameter("mail2"));
             List<Activite> activites  = activiteDAO.getListeActivite();
             request.setAttribute("activites", activites);

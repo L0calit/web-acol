@@ -141,29 +141,41 @@ public class ControleurParent extends HttpServlet {
             String classe = request.getParameter("classe");
             String regime = request.getParameter("regimeChoisi");
             String cantine = "";
-            /*if (request.getParameter("Lu").equals(true)) {
+            if (request.getParameter("Lu") != null) {
                 cantine += "lu/";
             }
-            if (request.getParameter("Ma").equals(true)) {
+            if (request.getParameter("Ma") != null) {
                 cantine += "ma/";
             }
-            if (request.getParameter("Me").equals(true)) {
+            if (request.getParameter("Me") != null) {
                 cantine += "me/";
             }
-            if (request.getParameter("Je").equals(true)) {
+            if (request.getParameter("Je") != null) {
                 cantine += "je/";
             }
-            if (request.getParameter("Ve").equals(true)) {
+            if (request.getParameter("Ve") != null) {
                 cantine += "ve/";
-            }*/
-            cantine = "lu/ma";
+            }
+            if (cantine.equals("")) {
+                cantine = "0";
+            }
             String divers = request.getParameter("divers");
             Cantine cantineElement = new Cantine(cantine);
             FicheParent parents = parentDAO.getFicheParent(loginParent);
             FicheEnfant ficheEnfant = new FicheEnfant(sexe, classe, dateNaissance,
                     divers, regime, parents, cantineElement, null, nomEnfant, prenomEnfant);
             parentDAO.ajoutEnfant(ficheEnfant, loginParent);
-            request.getRequestDispatcher("index.jsp").forward(request, response);
+            FicheParent ficheParent = parentDAO.getFicheParent(loginParent);
+            request.setAttribute("parent", ficheParent);
+            request.getRequestDispatcher("WEB-INF/parent.jsp").forward(request, response);
+        } else if (action.equals("enfantSupprimer")) {
+            String loginParent = request.getParameter("loginParent");
+            String prenom = request.getParameter("enfant");
+            ParentDAO parentDAO = new ParentDAO(ds);
+            parentDAO.supprimerEnfant(loginParent, prenom);
+            FicheParent ficheParent = parentDAO.getFicheParent(loginParent);
+            request.setAttribute("parent", ficheParent);
+            request.getRequestDispatcher("WEB-INF/parent.jsp").forward(request, response);
         }
     }
 }

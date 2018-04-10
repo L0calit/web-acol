@@ -42,19 +42,24 @@
         <br/>
         <h3>Ajouter une activité</h3>
         <form method="get" action="controleurMairie" accept-charset="UTF-8">
-            Nom de l'activité : <input type="text" name="nom"/>
+            Nom de l'activité : <input type="text" name="nom" required/>
             <br/>
-            Creneaux de l'activite : <input type='text' name="creneaux" />
+            Creneaux de l'activite : <input type='text' name="creneaux" required/>
             <br/>
-            Classe(s) concernées : <input type='text' name="classes" />
+            Classe(s) concernées : <input type='text' name="classes" required/>
             <br/>
-            Prix de l'activité : <input type='text' name="prix" />
+            Prix de l'activité : <input type='number' name="prix" min=0 required/>
             <br/>
-            Effectif de l'activité : <input type='text' name="effectif" />
+            Effectif de l'activité : <input type='number' name="effectif" min=0 required/>
             <br/>
-            Mail de l'accompagnateur1 : <input type='text' name="mail1" />
+            <c:if test="${illegalNumber == 1}">
+                      <div style="color:red;">
+                          Saisissez des nombres entiers pour le Prix et l'effectif
+                      </div>
+             </c:if>
+            Mail de l'accompagnateur1 : <input type='text' name="mail1" required/>
             <br/>
-            Mail de l'accompagnateur2: <input type='text' name="mail2" />
+            Mail de l'accompagnateur2: <input type='text' name="mail2" required/>
             <br/>
             <input type="submit" value="Ajouter" />
             <!-- Pour indiquer au contrôleur quelle action faire, on utilise un champ caché -->
@@ -73,7 +78,7 @@
         <br/>
         <h3>Ajouter un régime</h3>
           <form method="get" action="controleurMairie" accept-charset="UTF-8">
-            Regime à ajouter : <input type="text" name="regime"/>
+              Regime à ajouter : <input type="text" name="regime" required/>
             <input type="submit" value="Ajouter" />
             <!-- Pour indiquer au contrôleur quelle action faire, on utilise un champ caché -->
             <input type="hidden" name="action" value="regimeAjouter" />
