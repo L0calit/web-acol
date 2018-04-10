@@ -22,7 +22,16 @@
                         en dessous pour modifier la fiche-->
                         Fiche de ${parent.getPrenom()}
                         ${parent.getNom()}
-                    </td>                    
+                    </td>  
+                    <td> 
+                  Modifier les informations parents
+                  <form method="post" action="controleurParent" accept-charset="UTF-8">
+                    <input type="submit" value="Modifier" />
+                    <!-- Pour indiquer au contrôleur quelle action faire, on utilise un champ caché -->
+                    <input type="hidden" name="action" value="modifParent" />
+                    <input type="hidden" name="currentLogin" value="${parent.getLogin()}" />
+                  </form>
+              </td>
                     <td>
                         <!-- Afficher la liste des enfants avec chaque nom 
                         cliquable et qui renvoit vers la fiche d'un enfant
