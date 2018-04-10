@@ -100,6 +100,9 @@ public class ControleurMairie extends HttpServlet {
             request.setAttribute("activites", activites);
             request.setAttribute("periodes", periodes);
             request.getRequestDispatcher("/WEB-INF/mairie.jsp").forward(request, response);
+        } else if (action.equals("logout")) {
+            request.logout();
+            response.sendRedirect("index.jsp");
         }
     }
     

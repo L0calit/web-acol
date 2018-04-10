@@ -176,6 +176,20 @@ public class ControleurParent extends HttpServlet {
             FicheParent ficheParent = parentDAO.getFicheParent(loginParent);
             request.setAttribute("parent", ficheParent);
             request.getRequestDispatcher("WEB-INF/parent.jsp").forward(request, response);
+        } else if (action.equals("enfantInfo")) {
+            String loginParent = request.getParameter("loginParent");
+            String prenom = request.getParameter("enfant");
+            ParentDAO parentDAO = new ParentDAO(ds);
+            FicheParent ficheParent = parentDAO.getFicheParent(loginParent);
+            for (FicheEnfant enfant : ficheParent.getEnfants()) {
+                if (enfant.getPrenom().equals(prenom)) {
+                    request.setAttribute("ficheEnfant", enfant);
+                }
+            }
+            request.getRequestDispatcher("WEB-INF/enfant.jsp").forward(request, response);
+        } else if (action.equals("logout")) {
+            request.logout();
+            response.sendRedirect("index.jsp");
         }
     }
 }
