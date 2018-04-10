@@ -1,3 +1,11 @@
+<%-- 
+    Document   : index
+    Created on : Apr 10, 2018, 12:00:16 PM
+    Author     : boussanl
+--%>
+
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -11,7 +19,12 @@
       <tbody>
           <tr>
               <td> 
-                  Je suis un employé de la mairie :
+                  Je suis un employé de la mairie : <br/>
+                  <c:if test="${erreurLoginMairie == 1}">
+                      <div style="color:red;">
+                          Mauvais login/mot de passe
+                      </div>
+                  </c:if>
                   <form method="post" action="controleurMairie" accept-charset="UTF-8">
                     <ul>
                       <li> Login : <input type="text" name="login"/></li>
@@ -23,7 +36,12 @@
                   </form>
               </td>
               <td>
-                  Je suis un parent d'élève :
+                  Je suis un parent d'élève : <br/>
+                  <c:if test="${erreurLoginParent == 1}">
+                      <div style="color:red;">
+                          Mauvais login/mot de passe
+                      </div>
+                  </c:if>
                   <form method="post" action="controleurParent" accept-charset="UTF-8">
                     <ul>
                       <li> Login : <input type="text" name="login"/></li>
