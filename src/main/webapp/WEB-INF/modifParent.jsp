@@ -18,12 +18,14 @@
           <tr>
               <td> 
                   Informations modifiables
-                  <form method="post" action="controleurMairie" accept-charset="UTF-8">
+                  <form method="post" action="controleurParent" accept-charset="UTF-8">
                     <ul>
                       <li> Entrez un Nouveau Nom <input type="text" name="nom" value="${ficheParent.getNom()}"/></li>
                       <li> Entrez un Nouveau Prénom: <input type="text" name="prenom" value="${ficheParent.getPrenom()}"/></li>
-                      <li> Entrez un Nouveau Login: <input type="text" name="login" value="${ficheParent.getLogin()}"/></li>
-                      <li> Entrez un Nouveau Mot de passe: <input type="password" name="motdepasse"/></li>
+                      <!-- On fait un champ caché pour transmettre le login mais il n'est pas modifiable-->
+                      <li> <input type="hidden" name="login" value="${ficheParent.getLogin()}"/></li>
+                      <!--  A VOIR SI ON LE LAISSE
+                      <li> Entrez un Nouveau Mot de passe: <input type="password" name="motdepasse"/></li>-->
                       <li> Entrez une Nouvelle Adresse: <input type="text" name="adresse" value="${ficheParent.getAdresse()}"/></li>
                     </ul>
                     <input type="submit" value="Login" />

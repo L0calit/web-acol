@@ -6,6 +6,7 @@
 package dao;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -79,6 +80,22 @@ public class ParentDAO extends AbstractDataBaseDAO {
             throw new DAOException("Erreur BD " + e.getMessage(), e);
 	}
         return test;
+    }
+    
+    public void modifierInfo(String newAdresse, String newNom, String newPrenom, String login) {
+        try (
+	     Connection conn = getConn();
+	     PreparedStatement st = conn.prepareStatement
+	       ("UPDATE PARENT "
+                       + "SET NOM = '"+ newNom +"',"
+                       + "PRENOM = '" + newPrenom +"',"
+                       + "ADRESSE = '" + newAdresse + "'"
+                       + "WHERE LOGIN = '"+login+"'");
+	     ) {
+            st.executeUpdate();
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD " + e.getMessage(), e);
+        }
     }
     
     
