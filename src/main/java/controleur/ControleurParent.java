@@ -75,7 +75,28 @@ public class ControleurParent extends HttpServlet {
             FicheParent ancienneFicheParent = parentDAO.getFicheParent(request.getParameter("currentLogin"));
             request.setAttribute("ficheParent", ancienneFicheParent);
             request.getRequestDispatcher("/WEB-INF/modifParent.jsp").forward(request, response);
-        } else if (action.equals("modifInfo")) {
+        }else if (action.equals("creationCompteParent")) {
+            if(!request.getParameter("password1").equals(request.getParameter("password2"))){
+                request.setAttribute("differentPassword", "1");
+                request.getRequestDispatcher("/index.jsp").forward(request, response);
+            }
+            else if(parentDAO.verifyLogin(request.getParameter("login"))){
+                request.setAttribute("loginUsed", "1");
+                request.getRequestDispatcher("/index.jsp").forward(request, response);
+            }
+            request.setAttribute("login",request.getParameter("login"));
+            request.setAttribute("password",request.getParameter("password1"));
+            request.getRequestDispatcher("/WEB-INF/ajoutParent.jsp").forward(request, response);
+            
+        }else if (action.equals("creationFiche")) {
+            String adresse = request.getParameter("adresse");
+            String nom = request.getParameter("nom");
+            String prenom = request.getParameter("prenom");
+            String login = request.getParameter("login");
+            String password = request.getParameter("motdepasse");
+            parentDAO.creation(login, password, nom, prenom, adresse);
+            request.getRequestDispatcher("/index.jsp").forward(request, response);
+        }else if (action.equals("modifInfo")) {
             String newAdresse = request.getParameter("adresse");
             String newNom = request.getParameter("nom");
             String newPrenom = request.getParameter("prenom");
@@ -83,6 +104,7 @@ public class ControleurParent extends HttpServlet {
             parentDAO.modifierInfo(newAdresse, newNom, newPrenom, loginParent);
             FicheParent ficheParent = parentDAO.getFicheParent(loginParent);
             request.setAttribute("parent", ficheParent);
+            request.setAttribute("modifOK", 1);
             request.getRequestDispatcher("/WEB-INF/parent.jsp").forward(request, response);
         }
 
