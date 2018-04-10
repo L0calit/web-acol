@@ -11,6 +11,9 @@ and open the template in the editor.
 h1 {
  text-align: center;
  }
+ h2 {
+ text-align: center;
+ }
 h4 {
  text-align: center;
  }
@@ -25,4 +28,10 @@ h4 {
  ul {
     list-style-type: none;
     padding:0px;
+ }
+ #main_title{
+     margin-top: 5%;
+ }
+ #index{
+     margin-top: 15%;
  }
