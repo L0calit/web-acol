@@ -52,14 +52,19 @@
             <br/>
             Effectif de l'activité : <input type='number' name="effectif" min=0 required/>
             <br/>
-            <c:if test="${illegalNumber == 1}">
-                      <div style="color:red;">
-                          Saisissez des nombres entiers pour le Prix et l'effectif
-                      </div>
-             </c:if>
-            Mail de l'accompagnateur1 : <input type='text' name="mail1" required/>
+            Accompagnateur 1 :
+                <select name="mail1" required>
+                    <c:forEach items="${accompagnateurs}" var="accompagnateur">
+                        <option value="${accompagnateur}">${accompagnateur}</option>
+                    </c:forEach>   
+                </select>
             <br/>
-            Mail de l'accompagnateur2: <input type='text' name="mail2" required/>
+            Accompagnateur 2 :
+                <select name="mail2" required>
+                    <c:forEach items="${accompagnateurs}" var="accompagnateur">
+                        <option value="${accompagnateur}">${accompagnateur}</option>
+                    </c:forEach>   
+                </select>
             <br/>
             <input type="submit" value="Ajouter" />
             <!-- Pour indiquer au contrôleur quelle action faire, on utilise un champ caché -->
