@@ -30,5 +30,37 @@ public class FicheEnfant extends Fiche {
         this.cantine = cantine;
         this.prestation = prestation;
     }
-  
+
+    public String getSexe() {
+        return sexe;
+    }
+
+    public Cantine getCantine() {
+        return cantine;
+    }
+
+    public String getClasse() {
+        return classe;
+    }
+
+    public String getDateNaissance() {
+        return dateNaissance;
+    }
+
+    public String getDivers() {
+        return divers;
+    }
+    
+    public FicheParent getParents() {
+        return parents;
+    }
+
+    public Prestation getPrestation() {
+        return prestation;
+    }
+
+    public String getRegime() {
+        return regime;
+    }
+
 }

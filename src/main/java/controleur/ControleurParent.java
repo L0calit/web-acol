@@ -2,6 +2,7 @@ package controleur;
 
 import dao.DAOException;
 import dao.ParentDAO;
+import dao.RegimeDAO;
 import java.io.IOException;
 import java.util.List;
 import javax.annotation.Resource;
@@ -11,6 +12,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
+import modele.Cantine;
+import modele.FicheEnfant;
 import modele.FicheParent;
 
 /*
@@ -100,9 +103,45 @@ public class ControleurParent extends HttpServlet {
             invalidParameters(request, response);
             return;
         } else if (action.equals("ajoutEnfant")) {
+            RegimeDAO regimeDAO = new RegimeDAO(ds);
+            List<String> regimes = regimeDAO.getListeRegime();
+            request.setAttribute("regimes", regimes);
+            String login = request.getParameter("loginParent");
+            request.setAttribute("loginParent", login);
             request.getRequestDispatcher("/WEB-INF/ajoutEnfant.jsp").forward(request, response);
         } else if (action.equals("enfantAjouter")) {
-            
+            ParentDAO parentDAO = new ParentDAO(ds);
+            String loginParent = request.getParameter("loginParent");
+            String nomEnfant = request.getParameter("nom");
+            String prenomEnfant = request.getParameter("prenom");
+            String sexe = request.getParameter("sexe");
+            String dateNaissance = request.getParameter("dateNaissance");
+            String classe = request.getParameter("classe");
+            String regime = request.getParameter("regimeChoisi");
+            String cantine = "";
+            /*if (request.getParameter("Lu").equals(true)) {
+                cantine += "lu/";
+            }
+            if (request.getParameter("Ma").equals(true)) {
+                cantine += "ma/";
+            }
+            if (request.getParameter("Me").equals(true)) {
+                cantine += "me/";
+            }
+            if (request.getParameter("Je").equals(true)) {
+                cantine += "je/";
+            }
+            if (request.getParameter("Ve").equals(true)) {
+                cantine += "ve/";
+            }*/
+            cantine = "lu/ma";
+            String divers = request.getParameter("divers");
+            Cantine cantineElement = new Cantine(cantine);
+            FicheParent parents = parentDAO.getFicheParent(loginParent);
+            FicheEnfant ficheEnfant = new FicheEnfant(sexe, classe, dateNaissance,
+                    divers, regime, parents, cantineElement, null, nomEnfant, prenomEnfant);
+            parentDAO.ajoutEnfant(ficheEnfant, loginParent);
+            request.getRequestDispatcher("index.jsp").forward(request, response);
         }
     }
 }

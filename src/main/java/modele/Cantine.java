@@ -32,6 +32,26 @@ public class Cantine {
             }
         }
     }
-    
+
+    @Override
+    public String toString() {
+        String result = "";
+        if (lundi) {
+            result += "lu/";
+        }
+        if (mardi) {
+            result += "ma/";
+        }
+        if (mercredi) {
+            result += "me/";
+        }
+        if (jeudi) {
+            result += "je/";
+        }
+        if (vendredi) {
+            result += "ve/";
+        }
+       return result;
+    }
     
 }
