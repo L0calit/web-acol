@@ -35,3 +35,12 @@ h4 {
  #index{
      margin-top: 15%;
  }
+ #activite{
+     background-color:blanchedalmond;
+     border: solid yellow;
+     border-radius: 5px;
+ }
+ 
+ .container{
+     width: 720px;
+ }

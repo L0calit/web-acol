@@ -11,35 +11,41 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Mairie</title>
+        <link rel="stylesheet" type="text/css" href="style.css" />	
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+  
     </head>
     <body>
-        <h1>Vous êtes bien connectés</h1>
-        <!-- Afficher le catalogue des activités -->
+        <h1>Bonjour ${login}, vous êtes bien connectés</h1>
         <h2>Activités</h2>
-        <table border="1">
-            <tr>
-                <th>Nom</th>
-                <th>Créneaux</th>
-                <th>Classe</th>
-                <th>Prix</th>
-                <th>Effectif</th>
-                <th>Mail de l'accompagnateur 1</th>
-                <th>Mail de l'accompagnateur 2</th>
-            </tr>
-            <c:forEach items="${activites}" var="activite">
-                <tr>
-                    <td>${activite.getNom()}</td>
-                    <td>${activite.getCreneaux()}</td>
-                    <td>${activite.getClasse()}</td>
-                    <td>${activite.getPrix()}</td>
-                    <td>${activite.getEffectif()}</td>
-                    <td>${activite.getAccompagnateur1()}</td>
-                    <td>${activite.getAccompagnateur2()}</td>
-                    <td><a href="controleurMairie?action=activiteSupprimer&actiNom=${activite.getNom()}&actiCreneaux=${activite.getCreneaux()}">supprimer</a></td>
-                </tr>
-            </c:forEach>
-        </table>
-        <br/>
+        <div class="container">
+            <div id = "activite" class="row">
+                <div class="col">
+                    <table border="1">
+                        <tr>
+                            <th>Nom</th>
+                            <th>Créneaux</th>
+                            <th>Classe</th>
+                            <th>Prix</th>
+                            <th>Effectif</th>
+                            <th>Mail de l'accompagnateur 1</th>
+                            <th>Mail de l'accompagnateur 2</th>
+                        </tr>
+                        <c:forEach items="${activites}" var="activite">
+                            <tr>
+                                <td>${activite.getNom()}</td>
+                                <td>${activite.getCreneaux()}</td>
+                                <td>${activite.getClasse()}</td>
+                                <td>${activite.getPrix()}</td>
+                                <td>${activite.getEffectif()}</td>
+                                <td>${activite.getAccompagnateur1()}</td>
+                                <td>${activite.getAccompagnateur2()}</td>
+                                <td><a href="controleurMairie?action=activiteSupprimer&actiNom=${activite.getNom()}&actiCreneaux=${activite.getCreneaux()}">supprimer</a></td>
+                            </tr>
+                        </c:forEach>
+                    </table>
+                </div>
+                <div class="col">
         <h3>Ajouter une activité</h3>
         <form method="get" action="controleurMairie" accept-charset="UTF-8">
             Nom de l'activité : <input type="text" name="nom" required/>
@@ -65,6 +71,9 @@
             <!-- Pour indiquer au contrôleur quelle action faire, on utilise un champ caché -->
             <input type="hidden" name="action" value="activiteAjouter" />
         </form>
+        </div>
+        </div>
+    </div>
         <!-- Afficher les regimes -->
         <h2>Regime</h2>
         <table border="1">

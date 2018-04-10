@@ -129,18 +129,12 @@ public class ControleurMairie extends HttpServlet {
                 List<Activite> activites = activiteDAO.getListeActivite();
                 request.setAttribute("regimes", regimes);
                 request.setAttribute("activites", activites);
+                request.setAttribute("login",login);
                 request.getRequestDispatcher("/WEB-INF/mairie.jsp").forward(request, response);
             } else {
                 request.setAttribute("erreurLoginMairie", "1");
                 request.getRequestDispatcher("/index.jsp").forward(request, response);
             }
-        }else if (action.equals("connexion")) {
-            // tester si mdp et login corrects
-            List<String> regimes = regimeDAO.getListeRegime();
-            List<Activite> activites = activiteDAO.getListeActivite();
-            request.setAttribute("regimes", regimes);
-            request.setAttribute("activites", activites);
-            request.getRequestDispatcher("/WEB-INF/mairie.jsp").forward(request, response);
         }else if (action.equals("creationCompteMairie")) {
             if(!request.getParameter("password1").equals(request.getParameter("password2"))){
                 request.setAttribute("differentPassword", "1");
