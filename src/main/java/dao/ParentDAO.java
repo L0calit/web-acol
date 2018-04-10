@@ -71,7 +71,6 @@ public class ParentDAO extends AbstractDataBaseDAO {
 	     Statement st = conn.createStatement();
 	     ) {
             ResultSet rs = st.executeQuery("SELECT * FROM Parent WHERE login='" + login +"' AND mdp='"+password+"'");
-
             if (rs.next()) {
                 test = true;
             }

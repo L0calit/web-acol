@@ -64,11 +64,12 @@ public class ControleurParent extends HttpServlet {
             String login = request.getParameter("login");
             String mdp = request.getParameter("password");
             if (parentDAO.verify(login, mdp)) {
-                FicheParent ficheParent = parentDAO.getFicheParent("coude");
+                FicheParent ficheParent = parentDAO.getFicheParent(login);
                 request.setAttribute("parent", ficheParent);
                 request.getRequestDispatcher("/WEB-INF/parent.jsp").forward(request, response);
             } else {
-                request.getRequestDispatcher("/WEB-INF/parent.jsp").forward(request, response);
+                request.setAttribute("erreurLoginParent", "1");
+                request.getRequestDispatcher("/index.jsp").forward(request, response);
             }
         }
 
