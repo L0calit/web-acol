@@ -28,7 +28,7 @@
                       <li> Entrez un Nouveau Mot de passe: <input type="password" name="motdepasse"/></li>-->
                       <li> Entrez une Nouvelle Adresse: <input type="text" name="adresse" value="${ficheParent.getAdresse()}"/></li>
                     </ul>
-                    <input type="submit" value="Login" />
+                    <input type="submit" value="Appliquer les modifications" />
                     <!-- Pour indiquer au contrôleur quelle action faire, on utilise un champ caché -->
                     <input type="hidden" name="action" value="modifInfo" />
                   </form>

@@ -56,7 +56,7 @@ public class ActiviteDAO extends AbstractDataBaseDAO {
     /**
      * Ajoute l'actuvité dans la table activité
      */
-    public void ajouterActivite(String nom, String creneaux, String classe, String prix, String effectif, String mail1, String mail2) {
+    public void ajouterActivite(String nom, String creneaux, String classe, int prix, int effectif, String mail1, String mail2) {
         try (
 	     Connection conn = getConn();
 	     PreparedStatement st = conn.prepareStatement
@@ -65,8 +65,8 @@ public class ActiviteDAO extends AbstractDataBaseDAO {
             st.setString(1, nom);
             st.setString(2, creneaux);
             st.setString(3, classe);
-            st.setInt(4, Integer.parseInt(prix));
-            st.setInt(5, Integer.parseInt(effectif));
+            st.setInt(4, prix);
+            st.setInt(5, effectif);
             st.setString(6, mail1);
             st.setString(7, mail2);
             st.executeUpdate();

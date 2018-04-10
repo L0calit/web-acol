@@ -11,15 +11,15 @@
 <head>
   <meta charset="UTF-8" />
   <link rel="stylesheet" type="text/css" href="style.css" />	
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
   <title>Connexion</title>
 </head>
 <body>
   <h1>Connexion</h1>
-  <table border="0">
-      <tbody>
-          <tr>
-              <td> 
-                  Je suis un employé de la mairie : <br/>
+  <div class="container">
+        <div class="row">
+            <div id="log" class="col-sm">
+                <h4>Je suis un employé de la mairie : </h4><br/>
                   <c:if test="${erreurLoginMairie == 1}">
                       <div style="color:red;">
                           Mauvais login/mot de passe
@@ -27,16 +27,16 @@
                   </c:if>
                   <form method="post" action="controleurMairie" accept-charset="UTF-8">
                     <ul>
-                      <li> Login : <input type="text" name="login"/></li>
-                      <li> Mot de passe : <input type="password" name="password"/></li>
+                      <li> Login : <br/><input type="text" name="login"/></li>
+                      <li> Mot de passe : <br/><input type="password" name="password"/></li>
                     </ul>
                     <input type="submit" value="Login" />
                     <!-- Pour indiquer au contrôleur quelle action faire, on utilise un champ caché -->
                     <input type="hidden" name="action" value="connexion" />
                   </form>
-              </td>
-              <td>
-                  Je suis un parent d'élève : <br/>
+            </div>
+            <div id="log" class="col-sm">
+                <h4> Je suis un parent d'élève : </h4> <br/>
                   <c:if test="${erreurLoginParent == 1}">
                       <div style="color:red;">
                           Mauvais login/mot de passe
@@ -44,21 +44,21 @@
                   </c:if>
                   <form method="post" action="controleurParent" accept-charset="UTF-8">
                     <ul>
-                      <li> Login : <input type="text" name="login"/></li>
-                      <li> Mot de passe : <input type="password" name="password"/></li>
+                      <li> Login : <br/><input type="text" name="login"/></li>
+                      <li> Mot de passe : <br/><input type="password" name="password"/></li>
                     </ul>
                     <input type="submit" value="Login" />
                     <!-- Pour indiquer au contrôleur quelle action faire, on utilise un champ caché -->
                     <input type="hidden" name="action" value="connexion" />
                   </form>
-              </td>
-              <td>
-                  Je n'ai pas de compte Parent - Je veux en créer un : <br/>
+            </div>
+            <div id="log" class="col-sm"> 
+                    <h4>Créer un compte parent : </h4> <br/>
                   <form method="post" action="controleurParent" accept-charset="UTF-8">
                     <ul>
-                      <li> Créez un Login : <input type="text" name="login"/></li>
-                      <li> Créez un Mot de passe : <input type="password" name="password1"/></li>
-                      <li> Confirmez le Mot de passe : <input type="password" name="password2"/></li>
+                      <li> Créez un Login : <br/><input type="text" name="login"/></li>
+                      <li> Créez un Mot de passe : <br/><input type="password" name="password1"/></li>
+                      <li> Confirmez le Mot de passe : <br/><input type="password" name="password2"/></li>
                     </ul>
                    <c:if test="${differentPassword == 1}">
                       <div style="color:red;">
@@ -74,9 +74,8 @@
                     <!-- Pour indiquer au contrôleur quelle action faire, on utilise un champ caché -->
                     <input type="hidden" name="action" value="creationCompteParent" />
                   </form>
-              </td>
-          </tr>
-      </tbody>
-  </table>
+              </div>
+        </div>
+  </div>
 </body>
 </html>
