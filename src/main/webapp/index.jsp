@@ -15,9 +15,12 @@
   <title>Connexion</title>
 </head>
 <body>
-  <h1>Connexion</h1>
+  <div id="main_title">
+  <h1>Bienvenue sur le portail des activités de la Mairie</h1>
+  <h2>Connectez-vous ci-dessous</h2>
+  </div>
   <div class="container">
-        <div class="row">
+        <div id = "index" class="row">
             <div id="log" class="col-sm">
                 <h4>Je suis un employé de la mairie : </h4><br/>
                   <c:if test="${erreurLoginMairie == 1}">
