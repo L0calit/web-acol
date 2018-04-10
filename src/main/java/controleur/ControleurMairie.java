@@ -61,6 +61,14 @@ public class ControleurMairie extends HttpServlet {
             List<String> regimes = regimeDAO.getListeRegime();
             request.setAttribute("regimes", regimes);
             request.getRequestDispatcher("/WEB-INF/mairie.jsp").forward(request, response);
+        } else if (action.equals("activiteAjouter")) {
+            activiteDAO.ajouterActivite(request.getParameter("nom"), request.getParameter("creneaux"),
+                                         request.getParameter("classes"), request.getParameter("prix"),
+                                          request.getParameter("effectif"), request.getParameter("mail1"),
+                                          request.getParameter("mail2"));
+            List<Activite> activites  = activiteDAO.getListeActivite();
+            request.setAttribute("activites", activites);
+            request.getRequestDispatcher("/WEB-INF/mairie.jsp").forward(request, response);
         }
     }
     

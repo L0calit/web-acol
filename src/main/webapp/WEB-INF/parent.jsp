@@ -23,7 +23,12 @@
                         Fiche de ${parent.getPrenom()}
                         ${parent.getNom()}
                     </td>  
-                    <td> 
+                    <td>
+                  <c:if test="${modifOK == 1}">
+                      <div style="color:green;">
+                          Changement pris en compte
+                      </div>
+                  </c:if>
                   Modifier les informations parents
                   <form method="post" action="controleurParent" accept-charset="UTF-8">
                     <input type="submit" value="Modifier" />

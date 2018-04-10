@@ -120,5 +120,36 @@ public class ParentDAO extends AbstractDataBaseDAO {
         }
     }
     
+    public void creation(String login, String password, String nom, String prenom, String adresse) {
+        try (
+	     Connection conn = getConn();
+	     PreparedStatement st = conn.prepareStatement
+	       ("INSERT INTO PARENT (nom, prenom, adresse, login, mdp)"
+                       + "VALUES"
+                       + "('"+nom+"','"+prenom+"','"+adresse+"','"+login+"','"+password+"')");
+                ){
+            st.executeUpdate();
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD " + e.getMessage(), e);
+        }
+    }
+    
+        public boolean verifyLogin(String login) {
+        boolean test = false;
+        try (
+	     Connection conn = getConn();
+	     Statement st = conn.createStatement();
+	     ) {
+            ResultSet rs = st.executeQuery("SELECT * FROM Parent WHERE login='" + login +"'");
+            if (rs.next()) {
+                test = true;
+            }
+
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD " + e.getMessage(), e);
+	}
+        return test;
+    }
+    
     
 }

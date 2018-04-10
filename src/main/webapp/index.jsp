@@ -52,6 +52,29 @@
                     <input type="hidden" name="action" value="connexion" />
                   </form>
               </td>
+              <td>
+                  Je n'ai pas de compte Parent - Je veux en créer un : <br/>
+                  <form method="post" action="controleurParent" accept-charset="UTF-8">
+                    <ul>
+                      <li> Créez un Login : <input type="text" name="login"/></li>
+                      <li> Créez un Mot de passe : <input type="password" name="password1"/></li>
+                      <li> Confirmez le Mot de passe : <input type="password" name="password2"/></li>
+                    </ul>
+                   <c:if test="${differentPassword == 1}">
+                      <div style="color:red;">
+                          Saisissez le même mot de passe
+                      </div>
+                   </c:if>
+                   <c:if test="${loginUsed == 1}">
+                      <div style="color:red;">
+                          Ce login est déjà pris merci d'en choisir un autre !
+                      </div>
+                   </c:if>
+                    <input type="submit" value="Création" />
+                    <!-- Pour indiquer au contrôleur quelle action faire, on utilise un champ caché -->
+                    <input type="hidden" name="action" value="creationCompteParent" />
+                  </form>
+              </td>
           </tr>
       </tbody>
   </table>
