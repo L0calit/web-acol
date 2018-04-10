@@ -8,6 +8,8 @@
     </head>
     <body>
         <h1 style="text-align: center">Erreur de Contrôleur</h1>
+        <img src="https://media.giphy.com/media/3oriOeqBvDmQAcbp2U/giphy.gif" alt="Oups"/>
+        <br/><br/>
         Paramètres invalides : action <span style="color: red">${param.action}</span>
     </body>
 </html>

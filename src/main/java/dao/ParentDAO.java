@@ -82,6 +82,40 @@ public class ParentDAO extends AbstractDataBaseDAO {
         return test;
     }
     
+    public void supprimerEnfant(String loginParent, String prenomEnfant) {
+        try (
+	     Connection conn = getConn();
+	     PreparedStatement st = conn.prepareStatement
+	       ("DELETE FROM enfant WHERE loginParent='" + loginParent +"' AND prenom='" + prenomEnfant + "'");
+	     ) {
+            st.executeQuery();
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD " + e.getMessage(), e);
+        }
+    }
+    
+    public void ajoutEnfant(FicheEnfant ficheEnfant, String loginParent) {
+        try (
+	     Connection conn = getConn();
+	     PreparedStatement st = conn.prepareStatement("INSERT INTO Enfant (sexe,"
+                    + " nom, prenom, loginparent, classe, datedenaissance,"
+                    + " cantine, regime, divers) values ('" + ficheEnfant.getSexe()
+                     + "','" + ficheEnfant.getNom()
+                     + "','" + ficheEnfant.getPrenom()
+                     + "','" + loginParent
+                     + "','" + ficheEnfant.getClasse()
+                     + "','" + ficheEnfant.getDateNaissance()
+                     + "','" + ficheEnfant.getCantine().toString()
+                     + "','" + ficheEnfant.getRegime()
+                     + "','" + ficheEnfant.getDivers()
+                     + "')");
+	     ) {
+            st.executeQuery();
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD " + e.getMessage(), e);
+	}
+    }
+    
     public void modifierInfo(String newAdresse, String newNom, String newPrenom, String login) {
         try (
 	     Connection conn = getConn();
@@ -112,7 +146,7 @@ public class ParentDAO extends AbstractDataBaseDAO {
         }
     }
     
-        public boolean verifyLogin(String login) {
+    public boolean verifyLogin(String login) {
         boolean test = false;
         try (
 	     Connection conn = getConn();
