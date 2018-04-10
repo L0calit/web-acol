@@ -51,6 +51,9 @@ public class Cantine {
         if (vendredi) {
             result += "ve/";
         }
+        if (result.equals("")) {
+            return "0";
+        }
        return result;
     }
     
