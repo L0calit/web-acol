@@ -5,6 +5,7 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -19,19 +20,30 @@
                     <td>
                         <!-- Afficher les coordonnées parents avec un bouton 
                         en dessous pour modifier la fiche-->
-                    </td>                    
+                        Fiche de ${parent.getPrenom()}
+                        ${parent.getNom()}
+                    </td>  
+                    <td> 
+                  Modifier les informations parents
+                  <form method="post" action="controleurParent" accept-charset="UTF-8">
+                    <input type="submit" value="Modifier" />
+                    <!-- Pour indiquer au contrôleur quelle action faire, on utilise un champ caché -->
+                    <input type="hidden" name="action" value="modifParent" />
+                    <input type="hidden" name="currentLogin" value="${parent.getLogin()}" />
+                  </form>
+              </td>
                     <td>
                         <!-- Afficher la liste des enfants avec chaque nom 
                         cliquable et qui renvoit vers la fiche d'un enfant
                         + possibilité d'ajouter ou supprimer ou modifier un enfant-->
                         <table>
-                            <!--<c:forEach items="${enfants}" var="prenom">
+                            <c:forEach items="${parent.getEnfants()}" var="enfant">
                                 <tr>
-                                    <td>${prenom}</td>
-                                    <td><a href="controleurParent?action=enfantModifier&enfant=${prenom}">modifier</a></td>
-                                    <td><a href="controleurParent?action=enfantSupprimer&enfant=${prenom}">supprimer</a></td>
+                                    <td>${enfant.getPrenom()}</td>
+                                    <td><a href="controleurParent?action=enfantModifier&enfant=${enfant.getPrenom()}">modifier</a></td>
+                                    <td><a href="controleurParent?action=enfantSupprimer&enfant=${enfant.getPrenom()}">supprimer</a></td>
                                 </tr>
-                            </c:forEach>     -->                       
+                            </c:forEach>                   
                         </table>
                     </td>
                     <td>
