@@ -45,6 +45,7 @@
                                 </tr>
                             </c:forEach>                   
                         </table>
+                        <a href="controleurParent?action=ajoutEnfant&loginParent=${parent.getLogin()}">Ajouter un enfant</a>
                     </td>
                     <td>
                         <!-- Afficher l'historique des factures + bouton

@@ -18,7 +18,7 @@
           <tr>
               <td> 
                   Informations modifiables
-                  <form method="post" action="controleurMairie" accept-charset="UTF-8">
+                  <form method="post" action="controleurParent" accept-charset="UTF-8">
                     <ul>
                       <li> Entrez un Nouveau Nom <input type="text" name="nom" value="${ficheParent.getNom()}"/></li>
                       <li> Entrez un Nouveau Prénom: <input type="text" name="prenom" value="${ficheParent.getPrenom()}"/></li>

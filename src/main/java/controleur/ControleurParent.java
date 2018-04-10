@@ -47,7 +47,7 @@ public class ControleurParent extends HttpServlet {
         request.getRequestDispatcher("/WEB-INF/bdErreur.jsp").forward(request, response);
     }
     
-        /**
+    /**
      * Actions possibles en POST : connexion
      */
     public void doPost(HttpServletRequest request,
@@ -83,5 +83,23 @@ public class ControleurParent extends HttpServlet {
             String newPrenom = request.getParameter("prenom");
         }
 
+    }
+    
+    /**
+     * Actions possibles en GET : ajoutEnfant
+     */
+    public void doGet(HttpServletRequest request,
+            HttpServletResponse response)
+            throws IOException, ServletException {
+        request.setCharacterEncoding("UTF-8");
+        String action = request.getParameter("action");
+        if (action == null) {
+            invalidParameters(request, response);
+            return;
+        } else if (action.equals("ajoutEnfant")) {
+            request.getRequestDispatcher("/WEB-INF/ajoutEnfant.jsp").forward(request, response);
+        } else if (action.equals("enfantAjouter")) {
+            
+        }
     }
 }
