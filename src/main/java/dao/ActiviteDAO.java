@@ -35,10 +35,16 @@ public class ActiviteDAO extends AbstractDataBaseDAO {
             while (rs.next()) {
                 String nom = rs.getString("nom");
                 String classe = rs.getString("classe");
-                String[] classeDiviser = classe.split("/");
-                List<String> listeClasse = new ArrayList<String>(Arrays.asList(classeDiviser));
+                List<String> listeClasse = new ArrayList<String>();
+                if (classe.contains("/")) {
+                    String[] classeDiviser = classe.split("/");
+                    listeClasse = Arrays.asList(classeDiviser);
+                }
+                else {
+                    listeClasse.add(classe);
+                }
                 String creneaux = rs.getString("creneaux");
-                result.add(new Activite(nom, listeClasse, creneaux, rs.getInt("prix"), 
+                result.add(new Activite(nom, creneaux, listeClasse, rs.getInt("prix"), 
                         rs.getInt("effectif"), rs.getString("mailaccompagnateur1"), rs.getString("mailaccompagnateur2")));
             }
         } catch (SQLException e) {
@@ -54,7 +60,7 @@ public class ActiviteDAO extends AbstractDataBaseDAO {
         try (
 	     Connection conn = getConn();
 	     PreparedStatement st = conn.prepareStatement
-	       ("INSERT INTO activites (nom, creneaux, classe, prix, effectif, mailAccompagnateur1, mailAccompagnateur2) VALUES (?)");
+	       ("INSERT INTO activites (nom, creneaux, classe, prix, effectif, mailAccompagnateur1, mailAccompagnateur2) VALUES (?, ?, ?, ?, ?, ?, ?)");
 	     ) {
             st.setString(1, nom);
             st.setString(2, creneaux);

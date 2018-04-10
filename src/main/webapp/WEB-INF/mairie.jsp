@@ -23,6 +23,8 @@
                 <th>Classe</th>
                 <th>Prix</th>
                 <th>Effectif</th>
+                <th>Mail de l'accompagnateur 1</th>
+                <th>Mail de l'accompagnateur 2</th>
             </tr>
             <c:forEach items="${activites}" var="activite">
                 <tr>

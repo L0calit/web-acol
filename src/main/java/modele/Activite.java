@@ -14,17 +14,17 @@ import java.util.List;
  */
 public class Activite extends Prestation{
     private String nom;
-    private List<String> classe;
     private String creneaux;
+    private List<String> classe;
     private int prix;
     private int effectif;
     private String accompagnateur1;
     private String accompagnateur2;
 
-    public Activite(String nom, List<String> classe, String creneaux, int prix, int effectif, String mail1, String mail2) {
+    public Activite(String nom, String creneaux, List<String> classe, int prix, int effectif, String mail1, String mail2) {
         this.nom = nom;
-        this.classe = classe;
         this.creneaux = creneaux;
+        this.classe = classe;
         this.prix = prix;
         this.effectif = effectif;
         this.accompagnateur1 = mail1;
