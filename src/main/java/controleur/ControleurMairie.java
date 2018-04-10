@@ -7,6 +7,8 @@ package controleur;
 
 import dao.ActiviteDAO;
 import dao.DAOException;
+import dao.PeriodeDAO;
+import dao.EmployeDAO;
 import dao.RegimeDAO;
 import dao.AccompagnateurDAO;
 import java.io.*;
@@ -18,6 +20,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import javax.sql.DataSource;
 import modele.Activite;
+import modele.Periode;
+import modele.FicheParent;
 
 /**
  * Le contrôleur de l'application.
@@ -52,20 +56,29 @@ public class ControleurMairie extends HttpServlet {
         RegimeDAO regimeDAO = new RegimeDAO(ds);
         ActiviteDAO activiteDAO = new ActiviteDAO(ds);
         AccompagnateurDAO accompagnateurDAO = new AccompagnateurDAO(ds);
+        PeriodeDAO periodeDAO = new PeriodeDAO(ds);
         String action = request.getParameter("action");
         if (action.equals("regimeSupprimer")) {
             regimeDAO.supprimerRegime(request.getParameter("regime"));
             List<String> regimes = regimeDAO.getListeRegime();
+            List<Activite> activites = activiteDAO.getListeActivite();
+            List<Periode> periodes = periodeDAO.getPeriodes();
             request.setAttribute("regimes", regimes);
             List<String> accompagnateurs = accompagnateurDAO.getListEmail();
             request.setAttribute("accompagnateurs", accompagnateurs);
+            request.setAttribute("activites", activites);
+            request.setAttribute("periodes", periodes);
             request.getRequestDispatcher("/WEB-INF/mairie.jsp").forward(request, response);
         } else if (action.equals("regimeAjouter")) {
             regimeDAO.ajouterRegime(request.getParameter("regime"));
             List<String> regimes = regimeDAO.getListeRegime();
+            List<Activite> activites = activiteDAO.getListeActivite();
+            List<Periode> periodes = periodeDAO.getPeriodes();
             request.setAttribute("regimes", regimes);
             List<String> accompagnateurs = accompagnateurDAO.getListEmail();
             request.setAttribute("accompagnateurs", accompagnateurs);
+            request.setAttribute("activites", activites);
+            request.setAttribute("periodes", periodes);
             request.getRequestDispatcher("/WEB-INF/mairie.jsp").forward(request, response);
         } else if (action.equals("activiteAjouter")) {
             activiteDAO.ajouterActivite(request.getParameter("nom"), request.getParameter("creneaux"),
@@ -77,6 +90,27 @@ public class ControleurMairie extends HttpServlet {
             List<String> accompagnateurs = accompagnateurDAO.getListEmail();
             request.setAttribute("accompagnateurs", accompagnateurs);
             request.getRequestDispatcher("/WEB-INF/mairie.jsp").forward(request, response);
+        } else if (action.equals("periodeSupprimer")) {
+            periodeDAO.supprimerPeriode(request.getParameter("dateDebut"), request.getParameter("dateFin"));
+            List<String> regimes = regimeDAO.getListeRegime();
+            List<Activite> activites = activiteDAO.getListeActivite();
+            List<Periode> periodes = periodeDAO.getPeriodes();
+            request.setAttribute("regimes", regimes);
+            request.setAttribute("activites", activites);
+            request.setAttribute("periodes", periodes);
+            request.getRequestDispatcher("/WEB-INF/mairie.jsp").forward(request, response);
+        } else if (action.equals("periodeAjouter")) {
+            periodeDAO.ajouterPeriode(request.getParameter("dateDebut"), request.getParameter("dateFin"));
+            List<String> regimes = regimeDAO.getListeRegime();
+            List<Activite> activites = activiteDAO.getListeActivite();
+            List<Periode> periodes = periodeDAO.getPeriodes();
+            request.setAttribute("regimes", regimes);
+            request.setAttribute("activites", activites);
+            request.setAttribute("periodes", periodes);
+            request.getRequestDispatcher("/WEB-INF/mairie.jsp").forward(request, response);
+        } else if (action.equals("logout")) {
+            request.logout();
+            response.sendRedirect("index.jsp");
         }
     }
     
@@ -86,23 +120,55 @@ public class ControleurMairie extends HttpServlet {
     public void doPost(HttpServletRequest request,
             HttpServletResponse response)
             throws IOException, ServletException {
+        
         request.setCharacterEncoding("UTF-8");
         String action = request.getParameter("action");
         RegimeDAO regimeDAO = new RegimeDAO(ds);
         ActiviteDAO activiteDAO = new ActiviteDAO(ds);
         AccompagnateurDAO accompagnateurDAO = new AccompagnateurDAO(ds);
+        PeriodeDAO periodeDAO = new PeriodeDAO(ds);
+        EmployeDAO employeDAO = new EmployeDAO(ds);
         if (action == null) {
             invalidParameters(request, response);
             return;
+            
         } else if (action.equals("connexion")) {
             // tester si mdp et login corrects
+            String login = request.getParameter("login");
+            String mdp = request.getParameter("password");
+            if (employeDAO.verify(login, mdp)) {
+                List<String> regimes = regimeDAO.getListeRegime();
+                List<Activite> activites = activiteDAO.getListeActivite();
+                request.setAttribute("regimes", regimes);
+                request.setAttribute("activites", activites);
+                request.setAttribute("login",login);
+                request.getRequestDispatcher("/WEB-INF/mairie.jsp").forward(request, response);
+            } else {
+                request.setAttribute("erreurLoginMairie", "1");
+                request.getRequestDispatcher("/index.jsp").forward(request, response);
+            }
+        }else if (action.equals("creationCompteMairie")) {
+            if(!request.getParameter("password1").equals(request.getParameter("password2"))){
+                request.setAttribute("differentPassword", "1");
+                request.getRequestDispatcher("/WEB-INF/mairie.jsp").forward(request, response);
+            }
+            else if(employeDAO.verifyLogin(request.getParameter("login"))){
+                request.setAttribute("loginUsed", "1");
+                request.getRequestDispatcher("/WEB-INF/mairie.jsp").forward(request, response);
+            }
+            employeDAO.creation(request.getParameter("login"), request.getParameter("password1") );
             List<String> regimes = regimeDAO.getListeRegime();
             List<Activite> activites = activiteDAO.getListeActivite();
             List<String> accompagnateurs = accompagnateurDAO.getListEmail();
             request.setAttribute("regimes", regimes);
             request.setAttribute("activites", activites);
             request.setAttribute("accompagnateurs", accompagnateurs);
+            List<Periode> periodes = periodeDAO.getPeriodes();
+            request.setAttribute("regimes", regimes);
+            request.setAttribute("activites", activites);
+            request.setAttribute("periodes", periodes);
             request.getRequestDispatcher("/WEB-INF/mairie.jsp").forward(request, response);
+            
         }
 
 
