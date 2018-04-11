@@ -18,7 +18,7 @@
     <body>
         <h1>Bonjour ${login}, vous êtes bien connectés</h1>
         <h2>Activités</h2>
-        <div class="container">
+        <div id="container_activite" class="container">
             <div id = "activite" class="row">
                 <div class="col">
                     <table border="1">
