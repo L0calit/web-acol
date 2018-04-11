@@ -18,13 +18,14 @@
     <body>
         <h1>Bonjour ${login}, vous êtes bien connectés</h1>
         <h2>Activités</h2>
-        <div class="container">
+        <div id="container_activite" class="container">
             <div id = "activite" class="row">
                 <div class="col">
                     <table border="1">
                         <tr>
                             <th>Nom</th>
-                            <th>Créneaux</th>
+                            <th>Jour</th>
+                            <th>Horaire</th>
                             <th>Classe</th>
                             <th>Prix</th>
                             <th>Effectif</th>
@@ -34,13 +35,14 @@
                         <c:forEach items="${activites}" var="activite">
                             <tr>
                                 <td>${activite.getNom()}</td>
-                                <td>${activite.getCreneaux()}</td>
+                                <td>${activite.getCreneauxJour()}</td>
+                                <td>${activite.getCreneauxHeure()}</td>
                                 <td>${activite.getClasse()}</td>
                                 <td>${activite.getPrix()}</td>
                                 <td>${activite.getEffectif()}</td>
                                 <td>${activite.getAccompagnateur1()}</td>
                                 <td>${activite.getAccompagnateur2()}</td>
-                                <td><a href="controleurMairie?action=activiteSupprimer&actiNom=${activite.getNom()}&actiCreneaux=${activite.getCreneaux()}">supprimer</a></td>
+                                <td><a href="controleurMairie?action=activiteSupprimer&actiNom=${activite.getNom()}&actiJour=${activite.getCreneauxJour()}&actiHeure=${activite.getCreneauxHeure()}">supprimer</a></td>
                             </tr>
                         </c:forEach>
                     </table>
@@ -50,7 +52,29 @@
         <form method="get" action="controleurMairie" accept-charset="UTF-8">
             Nom de l'activité : <input type="text" name="nom" required/>
             <br/>
-            Creneaux de l'activite : <input type='text' name="creneaux" required/>
+            Jour :
+                <select name="jour" required>
+                        <option value="lundi">lundi</option>
+                        <option value="mardi">mardi</option>
+                        <option value="mercredi">mercredi</option>
+                        <option value="jeudi">jeudi</option>
+                        <option value="vendredi">vendredi</option>
+                </select>
+            <br/>
+            Horaire :
+                <select name="horaire" required>
+                        <option value="10h">10h</option>
+                        <option value="11h">11h</option>
+                        <option value="12h">12h</option>
+                        <option value="13h">13h</option>
+                        <option value="14h">14h</option>
+                        <option value="15h">15h</option>
+                        <option value="16h">16h</option>
+                        <option value="17h">17h</option>
+                        <option value="18h">18h</option>
+                        <option value="19h">19h</option>
+                        <option value="20h">20h</option>
+                </select>
             <br/>
             Classe(s) concernées : <input type='text' name="classes" required/>
             <br/>
@@ -72,6 +96,11 @@
                     </c:forEach>   
                 </select>
             <br/>
+            <c:if test="${SameAccompagnateur == 1}">
+                      <div style="color:red;">
+                          Saisissez des accompagnateurs différents
+                      </div>
+             </c:if>
             <input type="submit" value="Ajouter" />
             <!-- Pour indiquer au contrôleur quelle action faire, on utilise un champ caché -->
             <input type="hidden" name="action" value="activiteAjouter" />
@@ -119,9 +148,9 @@
         <h3> Rajouter un employé de la mairie: </h3> <br/>
                   <form method="post" action="controleurMairie" accept-charset="UTF-8">
                     <ul>
-                      <li> Créez un Login : <input type="text" name="login"/></li>
-                      <li> Créez un Mot de passe : <input type="password" name="password1"/></li>
-                      <li> Confirmez le Mot de passe : <input type="password" name="password2"/></li>
+                      <li> Créez un Login : <input type="text" name="login" required/></li>
+                      <li> Créez un Mot de passe : <input type="password" name="password1" required/></li>
+                      <li> Confirmez le Mot de passe : <input type="password" name="password2" required/></li>
                     </ul>
                    <c:if test="${differentPassword == 1}">
                       <div style="color:red;">

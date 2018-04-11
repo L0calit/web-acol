@@ -133,4 +133,16 @@ public class ActiviteDAO extends AbstractDataBaseDAO {
         }
     }
     
+    public void supprimerActivite(String nom, String creneauxJour, String creneauxHeure) {
+        try (
+	     Connection conn = getConn();
+	     PreparedStatement st = conn.prepareStatement
+	       ("DELETE FROM activites WHERE  nom='"+nom+"' and creneauxJour='"+creneauxJour+"' and creneauxHeure='"+creneauxHeure+"'");
+	     ) {
+            st.executeQuery();
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD " + e.getMessage(), e);
+        }
+    }
+    
 }
