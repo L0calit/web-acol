@@ -55,18 +55,63 @@ public class ActiviteDAO extends AbstractDataBaseDAO {
 	return result;
     }
     
+    /**
+     * Renvoie la liste des activites de la table activite dont l'enfant a le droit de selectionner.
+     */
     public List<Activite> getListeActivite(FicheEnfant ficheEnfant) {
-        List<Activite> result = this.getListeActivite();
-        for (Activite activite : result) {
-            if (activite.testClasse(ficheEnfant.getClasse())) {
-                // L'enfant peut être ajouté à cette activité
+        List<Activite> listActivite = this.getListeActivite();
+        List<Activite> reserved = this.getReserver(ficheEnfant);
+        List<Activite> result = new ArrayList<Activite>();
+        // On enleve toutes les activites qui ont déjà été reservé par l'enfant
+        listActivite.removeAll(reserved);
+        for (Activite activite : listActivite) {
+            // Verifier que l'enfant est bien dans une classe autorisé pour cette activité
+            // Verifier que l'enfant n'a pas déjà selectionner une activité lors de ce créneaux
+            if (activite.testClasse(ficheEnfant.getClasse()) && activite.testCreneaux(reserved)) {
+                result.add(activite);
             }
         }
         return result;
     }
     
     /**
-     * Ajoute l'actuvité dans la table activité
+     * Renvoie la liste des activités reservé par l'enfant
+     */
+    public List<Activite> getReserver(FicheEnfant ficheEnfant) {
+        List<Activite> result = new ArrayList<Activite>();
+        try (
+	     Connection conn = getConn();
+	     Statement st = conn.createStatement();
+	     ) {
+            ResultSet rs = st.executeQuery("SELECT * FROM ActiviteReserve AS AR JOIN Activites AS A ON "
+                    + "AR.nomActivite=A.nom AND AR.creneauxJour=A.creneauxJour"
+                    + "AR.creneauxHeure=A.creneauxHeure WHERE AR.prenomEnfant='"
+                    + ficheEnfant.getPrenom() + "' AND AR.loginParent='" + 
+                    ficheEnfant.getParents().getLogin() + "'");
+            while (rs.next()) {
+                String nom = rs.getString("nom");
+                String classe = rs.getString("classe");
+                List<String> listeClasse = new ArrayList<String>();
+                if (classe.contains("/")) {
+                    String[] classeDiviser = classe.split("/");
+                    listeClasse = Arrays.asList(classeDiviser);
+                }
+                else {
+                    listeClasse.add(classe);
+                }
+                String creneauxJour = rs.getString("creneauxJour");
+                String creneauxHeure = rs.getString("creneauxHeure");
+                result.add(new Activite(nom, creneauxJour, creneauxHeure, listeClasse, rs.getInt("prix"), 
+                        rs.getInt("effectif"), rs.getString("mailaccompagnateur1"), rs.getString("mailaccompagnateur2")));
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD " + e.getMessage(), e);
+	}
+	return result;
+    }
+    
+    /**
+     * Ajoute l'activité dans la table activité
      */
     public void ajouterActivite(String nom, String creneauxJour, String creneauxHeure, String classe, int prix, int effectif, String mail1, String mail2) {
         try (
