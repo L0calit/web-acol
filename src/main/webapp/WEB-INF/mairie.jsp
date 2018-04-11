@@ -104,8 +104,33 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                            Classe(s) concernées : <input type='text' name="classes" required/>
-                            </div>
+                            Classe(s) concernées : 
+                            <table border="1">
+                              <thead>
+                                  <tr>
+                                      <th>Petite Section</th>
+                                      <th>Moyenne Section</th>
+                                      <th>Grande Section</th>
+                                      <th>CP</th>
+                                      <th>CE1</th>
+                                      <th>CE2</th>
+                                      <th>CM1</th>
+                                      <th>CM2</th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                  <tr>
+                                      <td><input type="checkbox" name="PS" value="PS"></td>
+                                      <td><input type="checkbox" name="MS" value="MS"></td>
+                                      <td><input type="checkbox" name="GS" value="GS"></td>
+                                      <td><input type="checkbox" name="CP" value="CP"></td>
+                                      <td><input type="checkbox" name="CE1" value="CE1"></td>
+                                      <td><input type="checkbox" name="CE2" value="CE2"></td>
+                                      <td><input type="checkbox" name="CM1" value="CM1"></td>
+                                      <td><input type="checkbox" name="CM2" value="CM2"></td>
+                                  </tr>
+                              </tbody>
+                            </table>
                             <div class="form-group">
                             Prix de l'activité : <input type='number' name="prix" min=0 required/>
                             </div>
