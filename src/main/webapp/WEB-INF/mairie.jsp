@@ -24,7 +24,8 @@
                     <table border="1">
                         <tr>
                             <th>Nom</th>
-                            <th>Créneaux</th>
+                            <th>Jour</th>
+                            <th>Horaire</th>
                             <th>Classe</th>
                             <th>Prix</th>
                             <th>Effectif</th>
@@ -34,13 +35,14 @@
                         <c:forEach items="${activites}" var="activite">
                             <tr>
                                 <td>${activite.getNom()}</td>
-                                <td>${activite.getCreneaux()}</td>
+                                <td>${activite.getCreneauxJour()}</td>
+                                <td>${activite.getCreneauxHeure()}</td>
                                 <td>${activite.getClasse()}</td>
                                 <td>${activite.getPrix()}</td>
                                 <td>${activite.getEffectif()}</td>
                                 <td>${activite.getAccompagnateur1()}</td>
                                 <td>${activite.getAccompagnateur2()}</td>
-                                <td><a href="controleurMairie?action=activiteSupprimer&actiNom=${activite.getNom()}&actiCreneaux=${activite.getCreneaux()}">supprimer</a></td>
+                                <td><a href="controleurMairie?action=activiteSupprimer&actiNom=${activite.getNom()}&actiJour=${activite.getCreneauxJour()}&actiHeure=${activite.getCreneauxHeure()}">supprimer</a></td>
                             </tr>
                         </c:forEach>
                     </table>
@@ -60,7 +62,7 @@
                 </select>
             <br/>
             Horaire :
-                <select name="jour" required>
+                <select name="horaire" required>
                         <option value="10h">10h</option>
                         <option value="11h">11h</option>
                         <option value="12h">12h</option>

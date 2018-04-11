@@ -74,7 +74,7 @@ public class ControleurMairie extends HttpServlet {
                 requeteValide = false;
             }
             if (requeteValide) {
-                    activiteDAO.ajouterActivite(request.getParameter("nom"), request.getParameter("creneaux"),
+                    activiteDAO.ajouterActivite(request.getParameter("nom"), request.getParameter("jour"), request.getParameter("horaire"),
                                              request.getParameter("classes"), Integer.parseInt(request.getParameter("prix")),
                                               Integer.parseInt(request.getParameter("effectif")), request.getParameter("mail1"),
                                               request.getParameter("mail2"));
@@ -82,9 +82,9 @@ public class ControleurMairie extends HttpServlet {
             }
         
         } else if (action.equals("activiteSupprimer")) {
-            activiteDAO.supprimerActivite(request.getParameter("actiNom"), request.getParameter("actiCreneaux"));
+            activiteDAO.supprimerActivite(request.getParameter("actiNom"), request.getParameter("actiJour"), request.getParameter("actiHeure"));
             actualiserPage(request, response, regimeDAO, activiteDAO, accompagnateurDAO, periodeDAO);
-            
+          
         } else if (action.equals("periodeSupprimer")) {
             periodeDAO.supprimerPeriode(request.getParameter("dateDebut"), request.getParameter("dateFin"));
             actualiserPage(request, response, regimeDAO, activiteDAO, accompagnateurDAO, periodeDAO);
