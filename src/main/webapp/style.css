@@ -32,7 +32,7 @@ h4 {
  }
  body{
      background-color: #CCFFF8!important;
-     font-family: 'Raleway', sans-serif;
+     font-family: 'Raleway', sans-serif!important;
  }
  #main_title{
      margin-top: 5%;
