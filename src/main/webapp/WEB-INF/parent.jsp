@@ -25,20 +25,27 @@
         </div>
         <div id="container_parent" class="container">
            <div id="parent" class="row theme_classique">
+               <div class="col">
                   <c:if test="${modifOK == 1}">
                       <div style="color:green;">
                           Changement pris en compte
                       </div>
                   </c:if>
-               Modifier les informations parents<br/>
+               <div class="row">
+                   <h4>Modifier les informations parents</h4>
+               </div>
+               <div class="row">
                   <form method="post" action="controleurParent" accept-charset="UTF-8">
                     <input type="submit" value="Modifier" />
                     <!-- Pour indiquer au contrôleur quelle action faire, on utilise un champ caché -->
                     <input type="hidden" name="action" value="modifParent" />
                     <input type="hidden" name="currentLogin" value="${parent.getLogin()}" />
                   </form>
+                </div>
+               </div>
            </div>
-            <div id="enfant" class="row theme_classique">
+           <div id="enfant" class="row theme_classique">
+                <div class="col">
                 <!-- Afficher la liste des enfants avec chaque nom 
                         cliquable et qui renvoit vers la fiche d'un enfant
                         + possibilité d'ajouter ou supprimer ou modifier un enfant-->
@@ -50,12 +57,18 @@
                                 </tr>
                             </c:forEach>                   
                         </table>
+                </div>
+                <div id="ajout_enfant" class ="col" theme_classique">
+                    <div class="row">
+                        <h4>Ajouter un gosse</h4>
+                    </div>
+                    <div class="row">
+                        <a href="controleurParent?action=ajoutEnfant&loginParent=${parent.getLogin()}"><input type="button" value="Ajouter un enfant"></a>
+                    </div>
+                </div>  
             </div>
-            <div id="ajout_enfant" class ="row theme_classique">
-                    <a href="controleurParent?action=ajoutEnfant&loginParent=${parent.getLogin()}"><input type="button" value="Ajouter un enfant"></a>
-            </div>      
             <div id="facture" class="row theme_classique">    
-                        Historique des factures
+                <h4>Historique des factures<h4>
                         <!-- Afficher l'historique des factures + bouton
                         cliquable pour éditer une certaine facture-->
             </div>
