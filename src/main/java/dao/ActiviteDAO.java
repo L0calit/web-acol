@@ -75,4 +75,16 @@ public class ActiviteDAO extends AbstractDataBaseDAO {
         }
     }
     
+    public void supprimerActivite(String nom, String creneaux) {
+        try (
+	     Connection conn = getConn();
+	     PreparedStatement st = conn.prepareStatement
+	       ("DELETE FROM activites WHERE  nom='"+nom+"' and creneaux='"+creneaux+"'");
+	     ) {
+            st.executeQuery();
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD " + e.getMessage(), e);
+        }
+    }
+    
 }
