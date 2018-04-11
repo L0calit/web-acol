@@ -66,7 +66,7 @@ public class ActiviteDAO extends AbstractDataBaseDAO {
     }
     
     /**
-     * Ajoute l'actuvité dans la table activité
+     * Ajoute l'activité dans la table activité
      */
     public void ajouterActivite(String nom, String creneauxJour, String creneauxHeure, String classe, int prix, int effectif, String mail1, String mail2) {
         try (
@@ -83,6 +83,18 @@ public class ActiviteDAO extends AbstractDataBaseDAO {
             st.setString(7, mail1);
             st.setString(8, mail2);
             st.executeUpdate();
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD " + e.getMessage(), e);
+        }
+    }
+    
+    public void supprimerActivite(String nom, String creneauxJour, String creneauxHeure) {
+        try (
+	     Connection conn = getConn();
+	     PreparedStatement st = conn.prepareStatement
+	       ("DELETE FROM activites WHERE  nom='"+nom+"' and creneauxJour='"+creneauxJour+"' and creneauxHeure='"+creneauxHeure+"'");
+	     ) {
+            st.executeQuery();
         } catch (SQLException e) {
             throw new DAOException("Erreur BD " + e.getMessage(), e);
         }
