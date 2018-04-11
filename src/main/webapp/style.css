@@ -37,10 +37,38 @@ h4 {
  }
  #activite{
      background-color:blanchedalmond;
-     border: solid yellow;
+     border: solid red;
      border-radius: 5px;
+     margin:0px;
+     
  }
  
- .container{
-     width: 720px;
+
+ 
+ #container_parent{
+    background-color:greenyellow;
+ }
+ 
+ #container_activite{
+     max-width: 100% !important;
+ }
+ #enfant{
+ }
+ #parent{
+ }
+ #facture{
+ }
+ 
+ .theme_classique{
+     background-color:blanchedalmond !important;
+     border: solid yellow;
+     border-radius: 15px; 
+     padding-top:20px;
+     padding-bottom:20px;
+     padding-left:20px;
+     padding-right:20px;
+ }
+ 
+ .centrer{
+    align: center;
  }
