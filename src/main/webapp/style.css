@@ -8,6 +8,7 @@ and open the template in the editor.
     Author     : bernnico
 */
 
+
 h1 {
  text-align: center;
  }
@@ -31,6 +32,7 @@ h4 {
  }
  body{
      background-color: #CCFFF8!important;
+     font-family: 'Raleway', sans-serif;
  }
  #main_title{
      margin-top: 5%;
