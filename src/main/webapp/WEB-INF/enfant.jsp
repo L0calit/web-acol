@@ -24,6 +24,11 @@
             <li>Date de Naissance : ${ficheEnfant.getDateNaissance()}</li>
             <li>Divers : ${ficheEnfant.getDivers()}</li>
         </ul>
+        <form method="get" action="controleurParent">
+            <input type="submit" value="Ajouter activité">
+            <input type="hidden" name="action" value="ajoutActivite" />
+            <input type="hidden" name="enfant" value="${ficheEnfant}" />
+        </form>
         <form>
             <input type="button" value="Retour" onclick="history.go(-1)">
         </form>

@@ -75,7 +75,7 @@ public class ControleurMairie extends HttpServlet {
             request.setAttribute("periodes", periodes);
             request.getRequestDispatcher("/WEB-INF/mairie.jsp").forward(request, response);
         } else if (action.equals("activiteAjouter")) {
-            activiteDAO.ajouterActivite(request.getParameter("nom"), request.getParameter("creneaux"),
+            activiteDAO.ajouterActivite(request.getParameter("nom"), request.getParameter("creneauxJour"), request.getParameter("creneauxHeure"),
                                          request.getParameter("classes"), Integer.parseInt(request.getParameter("prix")),
                                           Integer.parseInt(request.getParameter("effectif")), request.getParameter("mail1"),
                                           request.getParameter("mail2"));

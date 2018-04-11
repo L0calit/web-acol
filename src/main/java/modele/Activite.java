@@ -14,25 +14,38 @@ import java.util.List;
  */
 public class Activite extends Prestation{
     private String nom;
-    private String creneaux;
+    private String creneauxJour;
+    private String creneauxHeure;
     private List<String> classe;
     private int prix;
     private int effectif;
     private String accompagnateur1;
     private String accompagnateur2;
 
-    public Activite(String nom, String creneaux, List<String> classe, int prix, int effectif, String mail1, String mail2) {
+    public Activite(String nom, String creneauxJour, String creneauxHeure, List<String> classe, int prix, int effectif, String accompagnateur1, String accompagnateur2) {
         this.nom = nom;
-        this.creneaux = creneaux;
+        this.creneauxJour = creneauxJour;
+        this.creneauxHeure = creneauxHeure;
         this.classe = classe;
         this.prix = prix;
         this.effectif = effectif;
-        this.accompagnateur1 = mail1;
-        this.accompagnateur2 = mail2;
+        this.accompagnateur1 = accompagnateur1;
+        this.accompagnateur2 = accompagnateur2;
+    }
+    
+    public boolean testClasse(String element) {
+        if (classe.contains(element)) {
+            return true;
+        }
+        return false;
     }
 
-    public String getCreneaux() {
-        return creneaux;
+    public String getCreneauxHeure() {
+        return creneauxHeure;
+    }
+
+    public String getCreneauxJour() {
+        return creneauxJour;
     }
 
     public int getEffectif() {
@@ -58,11 +71,6 @@ public class Activite extends Prestation{
 
     public String getAccompagnateur2() {
         return accompagnateur2;
-    }
-
-    @Override
-    public String toString() {
-        return creneaux + ":" + nom + "("+ classe.toString() + ")";
     }
     
 }
