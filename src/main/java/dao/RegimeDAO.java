@@ -30,7 +30,7 @@ public class RegimeDAO extends AbstractDataBaseDAO {
 	     Connection conn = getConn();
 	     Statement st = conn.createStatement();
 	     ) {
-            ResultSet rs = st.executeQuery("SELECT * FROM Regimes");
+            ResultSet rs = st.executeQuery("SELECT * FROM Regimes ORDER BY regime");
             while (rs.next()) {
                 result.add(rs.getString("regime"));
             }
@@ -71,4 +71,18 @@ public class RegimeDAO extends AbstractDataBaseDAO {
         }
     }
     
+    public boolean existeDeja(String nom) {
+        try (
+	     Connection conn = getConn();
+	     Statement st = conn.createStatement();
+            ) {
+            ResultSet rs = st.executeQuery("SELECT * FROM regimes WHERE regime='"+nom+"'");
+            if (rs.next()) {
+                return true;
+            }
+            return false;
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD " + e.getMessage(), e);
+        }
+    }
 }

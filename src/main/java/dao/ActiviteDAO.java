@@ -32,7 +32,7 @@ public class ActiviteDAO extends AbstractDataBaseDAO {
 	     Connection conn = getConn();
 	     Statement st = conn.createStatement();
 	     ) {
-            ResultSet rs = st.executeQuery("SELECT * FROM Activites");
+            ResultSet rs = st.executeQuery("SELECT * FROM Activites ORDER BY nom");
             while (rs.next()) {
                 String nom = rs.getString("nom");
                 String classe = rs.getString("classe");
@@ -95,6 +95,21 @@ public class ActiviteDAO extends AbstractDataBaseDAO {
 	       ("DELETE FROM activites WHERE  nom='"+nom+"' and creneauxJour='"+creneauxJour+"' and creneauxHeure='"+creneauxHeure+"'");
 	     ) {
             st.executeQuery();
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD " + e.getMessage(), e);
+        }
+    }
+     
+    public boolean existeDeja(String nom, String jour, String heure) {
+        try (
+	     Connection conn = getConn();
+	     Statement st = conn.createStatement();
+            ) {
+            ResultSet rs = st.executeQuery("SELECT * FROM activites WHERE nom='"+nom+"' and creneauxJour='"+jour+"' and creneauxHeure='"+heure+"'");
+            if (rs.next()) {
+                return true;
+            }
+            return false;
         } catch (SQLException e) {
             throw new DAOException("Erreur BD " + e.getMessage(), e);
         }

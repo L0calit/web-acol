@@ -101,6 +101,11 @@
                           Saisissez des accompagnateurs différents
                       </div>
              </c:if>
+            <c:if test="${SameActivity == 1}">
+                      <div style="color:red;">
+                          Le créneau est déja pris pour cette activité
+                      </div>
+             </c:if>
             <input type="submit" value="Ajouter" />
             <!-- Pour indiquer au contrôleur quelle action faire, on utilise un champ caché -->
             <input type="hidden" name="action" value="activiteAjouter" />
@@ -122,6 +127,11 @@
         <h3>Ajouter un régime</h3>
           <form method="get" action="controleurMairie" accept-charset="UTF-8">
               Regime à ajouter : <input type="text" name="regime" required/>
+              <c:if test="${SameRegime == 1}">
+                      <div style="color:red;">
+                          Ce régime existe déja
+                      </div>
+             </c:if>
             <input type="submit" value="Ajouter" />
             <!-- Pour indiquer au contrôleur quelle action faire, on utilise un champ caché -->
             <input type="hidden" name="action" value="regimeAjouter" />
