@@ -9,7 +9,8 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="stylesheet" type="text/css" href="style.css" />	
+        <link rel="stylesheet" type="text/css" href="style.css" />
+         <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Parent</title>
@@ -46,9 +47,11 @@
            </div>
            <div id="enfant" class="row theme_classique">
                 <div class="col">
-                <!-- Afficher la liste des enfants avec chaque nom 
-                        cliquable et qui renvoit vers la fiche d'un enfant
-                        + possibilité d'ajouter ou supprimer ou modifier un enfant-->
+                    <div class="row">
+                        Cliquez sur le nom de l'enfant pour accédez à sa fiche et aux 
+                        choix des activités
+                    </div>
+                    <div class="row">
                         <table>
                             <c:forEach items="${parent.getEnfants()}" var="enfant">
                                 <tr>
@@ -57,6 +60,7 @@
                                 </tr>
                             </c:forEach>                   
                         </table>
+                    </div>
                 </div>
                 <div id="ajout_enfant" class ="col" theme_classique">
                     <div class="row">

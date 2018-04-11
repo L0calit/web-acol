@@ -10,7 +10,8 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <link rel="stylesheet" type="text/css" href="style.css" />	
+  <link rel="stylesheet" type="text/css" href="style.css" />
+  <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
   <title>Connexion</title>
 </head>
@@ -22,7 +23,7 @@
   <div class="container">
         <div id = "index" class="row">
             <div id="log" class="col-sm">
-                <h4>Je suis un employé de la mairie : </h4><br/>
+                <h4>Je suis employé de la mairie : </h4><br/>
                   <c:if test="${erreurLoginMairie == 1}">
                       <div style="color:red;">
                           Mauvais login/mot de passe

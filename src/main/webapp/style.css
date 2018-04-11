@@ -8,6 +8,7 @@ and open the template in the editor.
     Author     : bernnico
 */
 
+
 h1 {
  text-align: center;
  }
@@ -31,6 +32,7 @@ h4 {
  }
  body{
      background-color: #CCFFF8!important;
+     font-family: 'Raleway', sans-serif!important;
  }
  #main_title{
      margin-top: 5%;
@@ -65,6 +67,7 @@ h4 {
      padding-bottom:20px;
      padding-left:20px;
      padding-right:20px;
+     margin:20px;
  }
  .page_activité{
      margin: 20px;
