@@ -39,6 +39,15 @@ public class Activite extends Prestation{
         }
         return false;
     }
+    
+    public boolean testCreneaux(List<Activite> reserved) {
+        for (Activite activite : reserved) {
+            if (activite.getCreneauxHeure().equals(creneauxHeure) && activite.getCreneauxJour().equals(creneauxJour)) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     public String getCreneauxHeure() {
         return creneauxHeure;
