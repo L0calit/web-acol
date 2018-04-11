@@ -168,6 +168,12 @@
                     <form method="get" action="controleurMairie" accept-charset="UTF-8">
                       <div class="form-group">                        
                        Régime à ajouter : <input type="text" name="regime" required/>
+                      </div>
+                        <c:if test="${SameRegime == 1}">
+                            <div style="color:red;">
+                              Ce régime existe déja
+                            </div>
+                        </c:if>
                       <input type="submit" value="Ajouter" />
                       <!-- Pour indiquer au contrôleur quelle action faire, on utilise un champ caché -->
                       <input type="hidden" name="action" value="regimeAjouter" />
