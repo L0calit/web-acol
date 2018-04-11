@@ -16,6 +16,13 @@
     </head>
     <body>
         <h1>Vous êtes bien connectés sur la fiche de ${parent.getPrenom()} ${parent.getNom()}</h1>
+        <div class="container">    
+            <div class="row">
+                <form>
+                   <a  href="controleurParent?action=logout"><input id="logout" type="button" value="LogOut"></a>
+                </form>
+            </div>    
+        </div>
         <div id="container_parent" class="container">
            <div id="parent" class="row theme_classique">
                   <c:if test="${modifOK == 1}">
@@ -53,13 +60,6 @@
                         cliquable pour éditer une certaine facture-->
             </div>
         </div>
-            <div class="container">    
-                <div class="row">
-                    <form>
-                       <a  href="controleurParent?action=logout"><input id="logout" type="button" value="LogOut"></a>
-                    </form>
-                </div>    
-            </div>
     </body>
 
 </html>

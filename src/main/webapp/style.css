@@ -19,7 +19,7 @@ h4 {
  }
 #log{
      padding:0px;
-     background-color:greenyellow;
+     background-color:blanchedalmond;
      border: solid yellow;
      border-radius: 5px;
      margin: 10px;
@@ -29,6 +29,9 @@ h4 {
     list-style-type: none;
     padding:0px;
  }
+ body{
+     background-color: #CCFFF8!important;
+ }
  #main_title{
      margin-top: 5%;
  }
@@ -36,21 +39,13 @@ h4 {
      margin-top: 15%;
  }
  #activite{
-     background-color:blanchedalmond;
-     border: solid red;
-     border-radius: 5px;
-     margin:0px;
-     
+     margin:10px;
  }
- 
-
- 
  #container_parent{
-    background-color:greenyellow;
  }
  
  #container_activite{
-     max-width: 100% !important;
+     //max-width: 100% !important;
  }
  #enfant{
  }
@@ -70,6 +65,9 @@ h4 {
      padding-bottom:20px;
      padding-left:20px;
      padding-right:20px;
+ }
+ .page_activité{
+     margin: 20px;
  }
  
  .centrer{
