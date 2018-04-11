@@ -1,5 +1,6 @@
 package controleur;
 
+import dao.ActiviteDAO;
 import dao.DAOException;
 import dao.ParentDAO;
 import dao.RegimeDAO;
@@ -190,6 +191,13 @@ public class ControleurParent extends HttpServlet {
         } else if (action.equals("logout")) {
             request.logout();
             response.sendRedirect("index.jsp");
+        } else if (action.equals("ajoutActivite")) {
+            // On souhaite recuperer toute la liste des activites disponible pour cette enfant
+            ActiviteDAO activiteDAO = new ActiviteDAO(ds);
+            FicheEnfant ficheEnfant = (FicheEnfant) request.getAttribute("enfant");
+            activiteDAO.getListeActivite(ficheEnfant);
+            request.setAttribute("ficheEnfant", ficheEnfant);
+            request.getRequestDispatcher("WEB-INF/ajoutActivite.jsp").forward(request, response);  
         }
     }
 }

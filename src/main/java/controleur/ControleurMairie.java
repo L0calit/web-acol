@@ -10,6 +10,7 @@ import dao.DAOException;
 import dao.PeriodeDAO;
 import dao.EmployeDAO;
 import dao.RegimeDAO;
+import dao.AccompagnateurDAO;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +55,7 @@ public class ControleurMairie extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         RegimeDAO regimeDAO = new RegimeDAO(ds);
         ActiviteDAO activiteDAO = new ActiviteDAO(ds);
+        AccompagnateurDAO accompagnateurDAO = new AccompagnateurDAO(ds);
         PeriodeDAO periodeDAO = new PeriodeDAO(ds);
         String action = request.getParameter("action");
         if (action.equals("regimeSupprimer")) {
@@ -62,6 +64,8 @@ public class ControleurMairie extends HttpServlet {
             List<Activite> activites = activiteDAO.getListeActivite();
             List<Periode> periodes = periodeDAO.getPeriodes();
             request.setAttribute("regimes", regimes);
+            List<String> accompagnateurs = accompagnateurDAO.getListEmail();
+            request.setAttribute("accompagnateurs", accompagnateurs);
             request.setAttribute("activites", activites);
             request.setAttribute("periodes", periodes);
             request.getRequestDispatcher("/WEB-INF/mairie.jsp").forward(request, response);
@@ -71,16 +75,20 @@ public class ControleurMairie extends HttpServlet {
             List<Activite> activites = activiteDAO.getListeActivite();
             List<Periode> periodes = periodeDAO.getPeriodes();
             request.setAttribute("regimes", regimes);
+            List<String> accompagnateurs = accompagnateurDAO.getListEmail();
+            request.setAttribute("accompagnateurs", accompagnateurs);
             request.setAttribute("activites", activites);
             request.setAttribute("periodes", periodes);
             request.getRequestDispatcher("/WEB-INF/mairie.jsp").forward(request, response);
         } else if (action.equals("activiteAjouter")) {
-            activiteDAO.ajouterActivite(request.getParameter("nom"), request.getParameter("creneaux"),
+            activiteDAO.ajouterActivite(request.getParameter("nom"), request.getParameter("creneauxJour"), request.getParameter("creneauxHeure"),
                                          request.getParameter("classes"), Integer.parseInt(request.getParameter("prix")),
                                           Integer.parseInt(request.getParameter("effectif")), request.getParameter("mail1"),
                                           request.getParameter("mail2"));
             List<Activite> activites  = activiteDAO.getListeActivite();
             request.setAttribute("activites", activites);
+            List<String> accompagnateurs = accompagnateurDAO.getListEmail();
+            request.setAttribute("accompagnateurs", accompagnateurs);
             request.getRequestDispatcher("/WEB-INF/mairie.jsp").forward(request, response);
         } else if (action.equals("periodeSupprimer")) {
             periodeDAO.supprimerPeriode(request.getParameter("dateDebut"), request.getParameter("dateFin"));
@@ -117,6 +125,7 @@ public class ControleurMairie extends HttpServlet {
         String action = request.getParameter("action");
         RegimeDAO regimeDAO = new RegimeDAO(ds);
         ActiviteDAO activiteDAO = new ActiviteDAO(ds);
+        AccompagnateurDAO accompagnateurDAO = new AccompagnateurDAO(ds);
         PeriodeDAO periodeDAO = new PeriodeDAO(ds);
         EmployeDAO employeDAO = new EmployeDAO(ds);
         if (action == null) {
@@ -150,6 +159,10 @@ public class ControleurMairie extends HttpServlet {
             employeDAO.creation(request.getParameter("login"), request.getParameter("password1") );
             List<String> regimes = regimeDAO.getListeRegime();
             List<Activite> activites = activiteDAO.getListeActivite();
+            List<String> accompagnateurs = accompagnateurDAO.getListEmail();
+            request.setAttribute("regimes", regimes);
+            request.setAttribute("activites", activites);
+            request.setAttribute("accompagnateurs", accompagnateurs);
             List<Periode> periodes = periodeDAO.getPeriodes();
             request.setAttribute("regimes", regimes);
             request.setAttribute("activites", activites);
