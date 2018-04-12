@@ -13,11 +13,18 @@
     <body>
          <div id="container_erreur" class="container">
            <div id="erreur" class="row theme_classique">
-            <h1 style="text-align: center">Erreur</h1>
-            <p>Une erreur d’accès à la base de données vient de se produire.</p>
-            <p>Message : </p>
-            <pre>${erreurMessage}</pre>
+               <div class="col">
+                   <div class="row">
+                        <h1 style="text-align: center">Erreur</h1>
+                   </div>
+                   <div class="row">
+                        <p>Une erreur d’accès à la base de données vient de se produire.</p>
+                   </div>
+                   <div class="row">
+                    <p>Message : ${erreurMessage}</pre>
+                   </div>
+               </div>
            </div>
          </div>
-</body>
-</html>
+    </body>
+    </html>
