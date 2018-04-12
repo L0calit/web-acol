@@ -64,6 +64,7 @@ public class ControleurParent extends HttpServlet {
         if (action == null) {
             invalidParameters(request, response);
             return;
+        
         } else if (action.equals("connexion")) {
             // tester si mdp et login corrects
             String login = request.getParameter("login");
@@ -76,10 +77,12 @@ public class ControleurParent extends HttpServlet {
                 request.setAttribute("erreurLoginParent", "1");
                 request.getRequestDispatcher("/index.jsp").forward(request, response);
             }
+        
         } else if (action.equals("modifParent")) {
             FicheParent ancienneFicheParent = parentDAO.getFicheParent(request.getParameter("currentLogin"));
             request.setAttribute("ficheParent", ancienneFicheParent);
             request.getRequestDispatcher("/WEB-INF/modifParent.jsp").forward(request, response);
+        
         }else if (action.equals("creationCompteParent")) {
             if(!request.getParameter("password1").equals(request.getParameter("password2"))){
                 request.setAttribute("differentPassword", "1");
@@ -101,6 +104,7 @@ public class ControleurParent extends HttpServlet {
             String password = request.getParameter("motdepasse");
             parentDAO.creation(login, password, nom, prenom, adresse);
             request.getRequestDispatcher("/index.jsp").forward(request, response);
+        
         }else if (action.equals("modifInfo")) {
             String newAdresse = request.getParameter("adresse");
             String newNom = request.getParameter("nom");
@@ -126,6 +130,7 @@ public class ControleurParent extends HttpServlet {
         if (action == null) {
             invalidParameters(request, response);
             return;
+        
         } else if (action.equals("ajoutEnfant")) {
             RegimeDAO regimeDAO = new RegimeDAO(ds);
             List<String> regimes = regimeDAO.getListeRegime();
@@ -133,6 +138,7 @@ public class ControleurParent extends HttpServlet {
             String login = request.getParameter("loginParent");
             request.setAttribute("loginParent", login);
             request.getRequestDispatcher("/WEB-INF/ajoutEnfant.jsp").forward(request, response);
+        
         } else if (action.equals("enfantAjouter")) {
             ParentDAO parentDAO = new ParentDAO(ds);
             String loginParent = request.getParameter("loginParent");

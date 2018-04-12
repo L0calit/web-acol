@@ -64,20 +64,65 @@ public class ControleurMairie extends HttpServlet {
             actualiserPage(request, response, regimeDAO, activiteDAO, accompagnateurDAO, periodeDAO);
             
         } else if (action.equals("regimeAjouter")) {
-            regimeDAO.ajouterRegime(request.getParameter("regime"));
-            actualiserPage(request, response, regimeDAO, activiteDAO, accompagnateurDAO, periodeDAO);
+            boolean requeteValide = true;
+            if (regimeDAO.existeDeja(request.getParameter("regime"))) {
+                request.setAttribute("SameRegime", "1");
+                requeteValide = false;
+                actualiserPage(request, response, regimeDAO, activiteDAO, accompagnateurDAO, periodeDAO);
+            }
+            if (requeteValide) {
+                regimeDAO.ajouterRegime(request.getParameter("regime"));
+                actualiserPage(request, response, regimeDAO, activiteDAO, accompagnateurDAO, periodeDAO);
+            }
         
         } else if (action.equals("activiteAjouter")) {
             boolean requeteValide = true;
-            if (request.getParameter("mail1") == request.getParameter("mail2")) {
-                request.setAttribute("SameAccompagnateur", 1);
+            if (request.getParameter("mail1").equals(request.getParameter("mail2"))) {
+                request.setAttribute("SameAccompagnateur", "1");
                 requeteValide = false;
+                actualiserPage(request, response, regimeDAO, activiteDAO, accompagnateurDAO, periodeDAO);
+            }
+            if (activiteDAO.existeDeja(request.getParameter("nom"), request.getParameter("jour"), request.getParameter("horaire"))) {
+                request.setAttribute("SameActivity", "1");
+                requeteValide = false;
+                actualiserPage(request, response, regimeDAO, activiteDAO, accompagnateurDAO, periodeDAO);
             }
             if (requeteValide) {
-                    activiteDAO.ajouterActivite(request.getParameter("nom"), request.getParameter("jour"), request.getParameter("horaire"),
-                                             request.getParameter("classes"), Integer.parseInt(request.getParameter("prix")),
-                                              Integer.parseInt(request.getParameter("effectif")), request.getParameter("mail1"),
-                                              request.getParameter("mail2"));
+                String classes = "";
+                if (request.getParameter("PS") != null) {
+                    classes += "PS/";
+                }
+                if (request.getParameter("MS") != null) {
+                    classes += "MS/";
+                }
+                if (request.getParameter("GS") != null) {
+                    classes += "GS/";
+                }
+                if (request.getParameter("CP") != null) {
+                    classes += "CP/";
+                }
+                if (request.getParameter("CE1") != null) {
+                    classes += "CE1/";
+                }
+                if (request.getParameter("CE2") != null) {
+                    classes += "CE2/";
+                }
+                if (request.getParameter("CM1") != null) {
+                    classes += "CM1/";
+                }
+                if (request.getParameter("CM2") != null) {
+                    classes += "CM2/";
+                }
+                if (classes.equals("")) {
+                    classes = "0";
+                }
+                else {
+                    classes = classes.substring(0, classes.length()-1);
+                }
+                activiteDAO.ajouterActivite(request.getParameter("nom"), request.getParameter("jour"), request.getParameter("horaire"),
+                                         classes, Integer.parseInt(request.getParameter("prix")),
+                                          Integer.parseInt(request.getParameter("effectif")), request.getParameter("mail1"),
+                                          request.getParameter("mail2"));
                 actualiserPage(request, response, regimeDAO, activiteDAO, accompagnateurDAO, periodeDAO);
             }
         
