@@ -54,7 +54,10 @@
                                     <td>${activite.getEffectif()}</td>
                                     <td>${activite.getAccompagnateur1()}</td>
                                     <td>${activite.getAccompagnateur2()}</td>
-                                    <td><a href="controleurMairie?action=activiteSupprimer&actiNom=${activite.getNom()}&actiJour=${activite.getCreneauxJour()}&actiHeure=${activite.getCreneauxHeure()}">supprimer</a></td>
+                                    <!-- Si periode en cours impossible d'afficher la colonnes suppression -->
+                                    <c:if test="${estEncours == false}">
+                                        <td><a href="controleurMairie?action=activiteSupprimer&actiNom=${activite.getNom()}&actiJour=${activite.getCreneauxJour()}&actiHeure=${activite.getCreneauxHeure()}">supprimer</a></td>
+                                    </c:if>
                                 </tr>
                             </c:forEach>
                             </tbody>
@@ -149,7 +152,16 @@
                                           Saisissez des accompagnateurs différents
                                       </div>
                              </c:if>
-                            <input type="submit" value="Ajouter" />
+                            <div class="form-group">
+                                Periode de l'activité :
+                                <select name="periode" required>
+                                    <c:forEach items="${periodes}" var="periode">
+                                        <option value="${periode.debutToString()}-->${periode.finToString()}">${periode.debutToString()} --> ${periode.finToString()}</option>
+                                    </c:forEach>   
+                                </select>                                
+                            </div>
+                           
+                            <input type="submit" value="Ajouter"  <c:if test="${estEnCours == true}">disabled</c:if> />
                             <!-- Pour indiquer au contrôleur quelle action faire, on utilise un champ caché -->
                             <input type="hidden" name="action" value="activiteAjouter" />
                         </form>
@@ -173,7 +185,9 @@
                             <c:forEach items="${regimes}" var="regime">
                                 <tr>
                                     <td>${regime}</td>
-                                    <td><a href="controleurMairie?action=regimeSupprimer&regime=${regime}">supprimer</a></td>
+                                    <c:if test="${estEnCours == false}">
+                                        <td><a href="controleurMairie?action=regimeSupprimer&regime=${regime}">supprimer</a></td>
+                                    </c:if>
                                 </tr>
                             </c:forEach>
                         </tbody>
@@ -190,7 +204,7 @@
                               Ce régime existe déja
                             </div>
                         </c:if>
-                      <input type="submit" value="Ajouter" />
+                        <input type="submit" value="Ajouter" <c:if test="${estEnCours == true}">disabled</c:if>/>
                       <!-- Pour indiquer au contrôleur quelle action faire, on utilise un champ caché -->
                       <input type="hidden" name="action" value="regimeAjouter" />
                       </div>
@@ -201,7 +215,7 @@
         <div id="container_periode" class="container">
             <%@ page import="modele.Periode" %>
             <%! Periode periode = new Periode();%>
-            <h2>Période - Jour : <%=periode.getJour()%> </h2>
+            <h2>Période - Jour : <%=periode.dateActuelleToString()%> </h2>
             <div class="row theme_classique page_activité">
                 <div class="col">
                  <table border="1" class="table table-bordered table-hover">
@@ -214,13 +228,20 @@
                      <tbody>
                         <c:forEach items="${periodes}" var="periode">
                             <tr>
-                                <td>${periode.getDateDebut()}</td>
-                                <td>${periode.getDateFin()}</td>
-                                <td><a href="controleurMairie?action=periodeSupprimer&dateDebut=${periode.getDateDebut()}&dateFin=${periode.getDateFin()}">supprimer</a></td>
+                                <td>${periode.debutToString()}</td>
+                                <td>${periode.finToString()}</td>
+                                <c:if test="${periode.estEnCours() == true}">
+                                    <td style="color: green;">Est en cours</td>
+                                </c:if>
+                                <c:if test="${periode.estEnCours() == false}">
+                                    <td><a href="controleurMairie?action=periodeSupprimer&dateDebut=${periode.debutToString()}&dateFin=${periode.finToString()}">supprimer</a></td>
+                                </c:if>
                             </tr>
                         </c:forEach> 
+
                      </tbody>
                  </table>
+                        
                 </div>
                 <div class="col">
                     <h3>Ajouter une période</h3>

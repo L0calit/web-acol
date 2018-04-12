@@ -3,6 +3,7 @@ package controleur;
 import dao.ActiviteDAO;
 import dao.DAOException;
 import dao.ParentDAO;
+import dao.PeriodeDAO;
 import dao.RegimeDAO;
 import java.io.IOException;
 import java.util.List;
@@ -17,6 +18,7 @@ import modele.Activite;
 import modele.Cantine;
 import modele.FicheEnfant;
 import modele.FicheParent;
+import modele.Periode;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -118,6 +120,9 @@ public class ControleurParent extends HttpServlet {
         FicheParent ficheParent = parentDAO.getFicheParent(loginParent);
         request.setAttribute("parent", ficheParent);
         request.setAttribute("modifOK", 1);
+        PeriodeDAO periodeDAO = new PeriodeDAO(ds);
+        List<Periode> periodes = periodeDAO.getPeriodes();
+        request.setAttribute("estEnCours", periodeEncours(periodes));
         request.getRequestDispatcher("/WEB-INF/parent.jsp").forward(request, response);
     }
     
@@ -194,11 +199,23 @@ public class ControleurParent extends HttpServlet {
         if (parentDAO.verify(login, mdp)) {
             FicheParent ficheParent = parentDAO.getFicheParent(login);
             request.setAttribute("parent", ficheParent);
+            PeriodeDAO periodeDAO = new PeriodeDAO(ds);
+            List<Periode> periodes = periodeDAO.getPeriodes();
+            request.setAttribute("estEnCours", periodeEncours(periodes));
             request.getRequestDispatcher("/WEB-INF/parent.jsp").forward(request, response);
         } else {
             request.setAttribute("erreurLoginParent", "1");
             request.getRequestDispatcher("/index.jsp").forward(request, response);
         }        
+    }
+    
+    public boolean periodeEncours(List<Periode> periodes) {
+        for (Periode periode : periodes) {
+            if (periode.estEnCours()) {
+                return true;
+            }
+        }
+        return false;
     }
     
     /**
@@ -261,6 +278,9 @@ public class ControleurParent extends HttpServlet {
             parentDAO.ajoutEnfant(ficheEnfant, loginParent);
             FicheParent ficheParent = parentDAO.getFicheParent(loginParent);
             request.setAttribute("parent", ficheParent);
+            PeriodeDAO periodeDAO = new PeriodeDAO(ds);
+            List<Periode> periodes = periodeDAO.getPeriodes();
+            request.setAttribute("estEnCours", periodeEncours(periodes));
             request.getRequestDispatcher("WEB-INF/parent.jsp").forward(request, response);
         } else if (action.equals("enfantSupprimer")) {
             String loginParent = request.getParameter("loginParent");
@@ -269,6 +289,9 @@ public class ControleurParent extends HttpServlet {
             parentDAO.supprimerEnfant(loginParent, prenom);
             FicheParent ficheParent = parentDAO.getFicheParent(loginParent);
             request.setAttribute("parent", ficheParent);
+            PeriodeDAO periodeDAO = new PeriodeDAO(ds);
+            List<Periode> periodes = periodeDAO.getPeriodes();
+            request.setAttribute("estEnCours", periodeEncours(periodes));
             request.getRequestDispatcher("WEB-INF/parent.jsp").forward(request, response);
         } else if (action.equals("enfantInfo")) {
             String loginParent = request.getParameter("loginParent");
@@ -284,6 +307,9 @@ public class ControleurParent extends HttpServlet {
                 }
             }
             request.setAttribute("loginParent", loginParent);
+            PeriodeDAO periodeDAO = new PeriodeDAO(ds);
+            List<Periode> periodes = periodeDAO.getPeriodes();
+            request.setAttribute("estEnCours", periodeEncours(periodes));
             request.getRequestDispatcher("WEB-INF/enfant.jsp").forward(request, response);
         } else if (action.equals("logout")) {
             request.logout();
@@ -293,6 +319,9 @@ public class ControleurParent extends HttpServlet {
                 String login = request.getParameter("loginParent");
                 FicheParent ficheParent = parentDAO.getFicheParent(login);
                 request.setAttribute("parent", ficheParent);
+                PeriodeDAO periodeDAO = new PeriodeDAO(ds);
+                List<Periode> periodes = periodeDAO.getPeriodes();
+                request.setAttribute("estEnCours", periodeEncours(periodes));
                 request.getRequestDispatcher("/WEB-INF/parent.jsp").forward(request, response);
         }else if (action.equals("ajoutActivite")) {
             // On souhaite recuperer toute la liste des activites disponible pour cette enfant
@@ -327,6 +356,9 @@ public class ControleurParent extends HttpServlet {
                 }
             }
             request.setAttribute("loginParent", loginParent);
+            PeriodeDAO periodeDAO = new PeriodeDAO(ds);
+            List<Periode> periodes = periodeDAO.getPeriodes();
+            request.setAttribute("estEnCours", periodeEncours(periodes));
             request.getRequestDispatcher("WEB-INF/enfant.jsp").forward(request, response);
         } else if (action.equals("activiteSupprimer")) {
             // On parse la value choisi pour les elements importants
@@ -347,6 +379,9 @@ public class ControleurParent extends HttpServlet {
                 }
             }
             request.setAttribute("loginParent", loginParent);
+            PeriodeDAO periodeDAO = new PeriodeDAO(ds);
+            List<Periode> periodes = periodeDAO.getPeriodes();
+            request.setAttribute("estEnCours", periodeEncours(periodes));
             request.getRequestDispatcher("WEB-INF/enfant.jsp").forward(request, response);
         }
     }

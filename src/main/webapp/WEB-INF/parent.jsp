@@ -56,7 +56,9 @@
                             <c:forEach items="${parent.getEnfants()}" var="enfant">
                                 <tr>
                                     <td><a href="controleurParent?action=enfantInfo&enfant=${enfant.getPrenom()}&loginParent=${parent.getLogin()}"><input type="button" value="${enfant.getPrenom()}"></a></td>
-                                    <td><a href="controleurParent?action=enfantSupprimer&enfant=${enfant.getPrenom()}&loginParent=${parent.getLogin()}"><input type="button"value="supprimer"</a></td>
+                                    <c:if test="${estEnCours == false}">
+                                        <td><a href="controleurParent?action=enfantSupprimer&enfant=${enfant.getPrenom()}&loginParent=${parent.getLogin()}"><input type="button"value="supprimer"</a></td>
+                                    </c:if>
                                 </tr>
                             </c:forEach>                   
                         </table>
