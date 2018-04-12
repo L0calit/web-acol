@@ -24,13 +24,30 @@
             <li>Date de Naissance : ${ficheEnfant.getDateNaissance()}</li>
             <li>Divers : ${ficheEnfant.getDivers()}</li>
         </ul>
+        
+        <div id="enfant" class="row theme_classique">
+            <table>
+                <c:forEach items="${activites}" var="activite">
+                    <tr>
+                        <td>${activite}</td>
+                        <td><a href="controleurParent?action=activiteSupprimer&prenomEnfant=${ficheEnfant.getPrenom().trim()}&loginParent=${loginParent.trim()}&nomActivite=${activite.getNom()}&creneauxJour=${activite.getCreneauxJour()}&creneauxHeure=${activite.getCreneauxHeure()}"><input type="button"value="supprimer"></a></td>
+                    </tr>
+                </c:forEach>                   
+            </table>
+        </div>
         <form method="get" action="controleurParent">
             <input type="submit" value="Ajouter activité">
             <input type="hidden" name="action" value="ajoutActivite" />
-            <input type="hidden" name="enfant" value="${ficheEnfant}" />
+            <input type="hidden" name="nom" value="${ficheEnfant.getNom()}" />
+            <input type="hidden" name="prenom" value="${ficheEnfant.getPrenom()}" />
+            <input type="hidden" name="loginParent" value="${loginParent}" />
         </form>
-        <form>
-            <input type="button" value="Retour" onclick="history.go(-1)">
-        </form>
+        <div class="container">    
+            <div class="row">
+                <form>
+                    <a  href="controleurParent?action=retourParent&loginParent=${loginParent}"><input id="retour" type="button" value="retour"></a>
+                </form>
+            </div>    
+        </div>
     </body>
 </html>
