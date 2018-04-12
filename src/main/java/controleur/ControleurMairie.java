@@ -12,7 +12,6 @@ import dao.EmployeDAO;
 import dao.RegimeDAO;
 import dao.AccompagnateurDAO;
 import java.io.*;
-import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.*;
@@ -21,7 +20,6 @@ import javax.servlet.http.*;
 import javax.sql.DataSource;
 import modele.Activite;
 import modele.Periode;
-import modele.FicheParent;
 
 /**
  * Le contrôleur de l'application.
