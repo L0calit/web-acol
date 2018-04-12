@@ -34,8 +34,8 @@ public class PeriodeDAO extends AbstractDataBaseDAO {
 	     ) {
             ResultSet rs = st.executeQuery("SELECT * FROM Periode");
             while (rs.next()) {
-                Date dateDebut = rs.getDate("dateDebut");
-                Date dateFin = rs.getDate("dateFin");
+                String dateDebut = rs.getString("dateDebut");
+                String dateFin = rs.getString("dateFin");
                 result.add(new Periode(dateDebut, dateFin));
             }
         } catch (SQLException e) {

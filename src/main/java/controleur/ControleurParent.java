@@ -3,6 +3,7 @@ package controleur;
 import dao.ActiviteDAO;
 import dao.DAOException;
 import dao.ParentDAO;
+import dao.PeriodeDAO;
 import dao.RegimeDAO;
 import java.io.IOException;
 import java.util.List;
@@ -17,6 +18,7 @@ import modele.Activite;
 import modele.Cantine;
 import modele.FicheEnfant;
 import modele.FicheParent;
+import modele.Periode;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -38,12 +40,26 @@ public class ControleurParent extends HttpServlet {
     @Resource(name = "jdbc/bibliography")
     private DataSource ds;
 
-    /* pages d’erreurs */
+    /**
+     * Permet de gérer le cas si les paramètres donnés ne sont pas correctes
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException 
+     */
     private void invalidParameters(HttpServletRequest request,
             HttpServletResponse response) throws ServletException, IOException {
         request.getRequestDispatcher("/WEB-INF/controleurErreur.jsp").forward(request, response);        
     }
 
+    /**
+     * Permet de gérer le cas où il y a eu une erreur avec la base de données
+     * @param request
+     * @param response
+     * @param e
+     * @throws ServletException
+     * @throws IOException 
+     */
     private void erreurBD(HttpServletRequest request,
                 HttpServletResponse response, DAOException e)
             throws ServletException, IOException {
@@ -53,74 +69,161 @@ public class ControleurParent extends HttpServlet {
     }
     
     /**
-     * Actions possibles en POST : connexion
+     * Actions possibles en POST :
+     * @param request
+     * @param response
+     * @throws IOException
+     * @throws ServletException 
      */
+    @Override
     public void doPost(HttpServletRequest request,
             HttpServletResponse response)
             throws IOException, ServletException {
         request.setCharacterEncoding("UTF-8");
         String action = request.getParameter("action");
         ParentDAO parentDAO = new ParentDAO(ds);
-        if (action == null) {
-            invalidParameters(request, response);
-            return;
-        
-        } else if (action.equals("connexion")) {
-            // tester si mdp et login corrects
-            String login = request.getParameter("login");
-            String mdp = request.getParameter("password");
-            if (parentDAO.verify(login, mdp)) {
-                FicheParent ficheParent = parentDAO.getFicheParent(login);
-                request.setAttribute("parent", ficheParent);
-                request.getRequestDispatcher("/WEB-INF/parent.jsp").forward(request, response);
-            } else {
-                request.setAttribute("erreurLoginParent", "1");
-                request.getRequestDispatcher("/index.jsp").forward(request, response);
+        try {
+            if (action == null) {
+                invalidParameters(request, response);
+                return;
+            } else if (action.equals("connexion")) {
+                actionConnexion(request, response, parentDAO);
+            } else if (action.equals("modifParent")) {
+                actionModifierParent(request, response, parentDAO);
+            }else if (action.equals("creationCompteParent")) {
+                actionCreationCompteParent(request, response, parentDAO);
+            }else if (action.equals("creationFiche")) {
+                actionCreationFiche(request, response, parentDAO);
+            }else if (action.equals("modifInfo")) {
+                actionModifInfo(request, response, parentDAO);
             }
-        
-        } else if (action.equals("modifParent")) {
-            FicheParent ancienneFicheParent = parentDAO.getFicheParent(request.getParameter("currentLogin"));
-            request.setAttribute("ficheParent", ancienneFicheParent);
-            request.getRequestDispatcher("/WEB-INF/modifParent.jsp").forward(request, response);
-        
-        }else if (action.equals("creationCompteParent")) {
-            if(!request.getParameter("password1").equals(request.getParameter("password2"))){
-                request.setAttribute("differentPassword", "1");
-                request.getRequestDispatcher("/index.jsp").forward(request, response);
-            }
-            else if(parentDAO.verifyLogin(request.getParameter("login"))){
-                request.setAttribute("loginUsed", "1");
-                request.getRequestDispatcher("/index.jsp").forward(request, response);
-            }
-            request.setAttribute("login",request.getParameter("login"));
-            request.setAttribute("password",request.getParameter("password1"));
-            request.getRequestDispatcher("/WEB-INF/ajoutParent.jsp").forward(request, response);
-            
-        }else if (action.equals("creationFiche")) {
-            String adresse = request.getParameter("adresse");
-            String nom = request.getParameter("nom");
-            String prenom = request.getParameter("prenom");
-            String login = request.getParameter("login");
-            String password = request.getParameter("motdepasse");
-            parentDAO.creation(login, password, nom, prenom, adresse);
-            request.getRequestDispatcher("/index.jsp").forward(request, response);
-        
-        }else if (action.equals("modifInfo")) {
-            String newAdresse = request.getParameter("adresse");
-            String newNom = request.getParameter("nom");
-            String newPrenom = request.getParameter("prenom");
-            String loginParent = request.getParameter("login");
-            parentDAO.modifierInfo(newAdresse, newNom, newPrenom, loginParent);
-            FicheParent ficheParent = parentDAO.getFicheParent(loginParent);
-            request.setAttribute("parent", ficheParent);
-            request.setAttribute("modifOK", 1);
-            request.getRequestDispatcher("/WEB-INF/parent.jsp").forward(request, response);
+        } catch (DAOException e) {
+            erreurBD(request, response, e);
         }
-
     }
     
     /**
-     * Actions possibles en GET : ajoutEnfant
+     * Modifie les informations du parent dans la base de données
+     * @param request
+     * @param response
+     * @param parentDAO
+     * @throws IOException
+     * @throws ServletException 
+     */
+    public void actionModifInfo(HttpServletRequest request, HttpServletResponse response,
+            ParentDAO parentDAO) throws IOException, ServletException {
+        String newAdresse = request.getParameter("adresse");
+        String newNom = request.getParameter("nom");
+        String newPrenom = request.getParameter("prenom");
+        String loginParent = request.getParameter("login");
+        parentDAO.modifierInfo(newAdresse, newNom, newPrenom, loginParent);
+        FicheParent ficheParent = parentDAO.getFicheParent(loginParent);
+        request.setAttribute("parent", ficheParent);
+        request.setAttribute("modifOK", 1);
+        PeriodeDAO periodeDAO = new PeriodeDAO(ds);
+        List<Periode> periodes = periodeDAO.getPeriodes();
+        request.setAttribute("estEnCours", periodeEncours(periodes));
+        request.getRequestDispatcher("/WEB-INF/parent.jsp").forward(request, response);
+    }
+    
+    /**
+     * Crée une fiche parent dans la base de données
+     * @param request
+     * @param response
+     * @param parentDAO
+     * @throws IOException
+     * @throws ServletException 
+     */
+    public void actionCreationFiche(HttpServletRequest request, HttpServletResponse response,
+            ParentDAO parentDAO) throws IOException, ServletException {
+        String adresse = request.getParameter("adresse");
+        String nom = request.getParameter("nom");
+        String prenom = request.getParameter("prenom");
+        String login = request.getParameter("login");
+        String password = request.getParameter("motdepasse");
+        parentDAO.creation(login, password, nom, prenom, adresse);
+        request.getRequestDispatcher("/index.jsp").forward(request, response);
+    }
+    
+    /**
+     * Verifie que le compte parent n'existe pas et en plus que le password est bien rentré
+     * Puis on affiche la page d'ajout des informations
+     * @param request
+     * @param response
+     * @param parentDAO
+     * @throws IOException
+     * @throws ServletException 
+     */
+    public void actionCreationCompteParent(HttpServletRequest request, HttpServletResponse response,
+            ParentDAO parentDAO) throws IOException, ServletException {
+        if(!request.getParameter("password1").equals(request.getParameter("password2"))){
+            request.setAttribute("differentPassword", "1");
+            request.getRequestDispatcher("/index.jsp").forward(request, response);
+        }
+        else if(parentDAO.verifyLogin(request.getParameter("login"))){
+            request.setAttribute("loginUsed", "1");
+            request.getRequestDispatcher("/index.jsp").forward(request, response);
+        }
+        request.setAttribute("login",request.getParameter("login"));
+        request.setAttribute("password",request.getParameter("password1"));
+        request.getRequestDispatcher("/WEB-INF/ajoutParent.jsp").forward(request, response);
+    }
+    
+    /**
+     * Affiche la page de modification des informations
+     * @param request
+     * @param response
+     * @param parentDAO
+     * @throws IOException
+     * @throws ServletException 
+     */
+    public void actionModifierParent(HttpServletRequest request, HttpServletResponse response,
+            ParentDAO parentDAO) throws IOException, ServletException {
+        FicheParent ancienneFicheParent = parentDAO.getFicheParent(request.getParameter("currentLogin"));
+        request.setAttribute("ficheParent", ancienneFicheParent);
+        request.getRequestDispatcher("/WEB-INF/modifParent.jsp").forward(request, response);        
+    }
+    
+    /**
+     * Permet la connexion d'un utilisateur
+     * @param request
+     * @param response
+     * @param parentDAO
+     * @throws IOException
+     * @throws ServletException 
+     */
+    public void actionConnexion(HttpServletRequest request, HttpServletResponse response,
+            ParentDAO parentDAO) throws IOException, ServletException {
+        String login = request.getParameter("login");
+        String mdp = request.getParameter("password");
+        if (parentDAO.verify(login, mdp)) {
+            FicheParent ficheParent = parentDAO.getFicheParent(login);
+            request.setAttribute("parent", ficheParent);
+            PeriodeDAO periodeDAO = new PeriodeDAO(ds);
+            List<Periode> periodes = periodeDAO.getPeriodes();
+            request.setAttribute("estEnCours", periodeEncours(periodes));
+            request.getRequestDispatcher("/WEB-INF/parent.jsp").forward(request, response);
+        } else {
+            request.setAttribute("erreurLoginParent", "1");
+            request.getRequestDispatcher("/index.jsp").forward(request, response);
+        }        
+    }
+    
+    public boolean periodeEncours(List<Periode> periodes) {
+        for (Periode periode : periodes) {
+            if (periode.estEnCours()) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * Actions possible en GET : 
+     * @param request
+     * @param response
+     * @throws IOException
+     * @throws ServletException 
      */
     public void doGet(HttpServletRequest request,
             HttpServletResponse response)
@@ -175,6 +278,9 @@ public class ControleurParent extends HttpServlet {
             parentDAO.ajoutEnfant(ficheEnfant, loginParent);
             FicheParent ficheParent = parentDAO.getFicheParent(loginParent);
             request.setAttribute("parent", ficheParent);
+            PeriodeDAO periodeDAO = new PeriodeDAO(ds);
+            List<Periode> periodes = periodeDAO.getPeriodes();
+            request.setAttribute("estEnCours", periodeEncours(periodes));
             request.getRequestDispatcher("WEB-INF/parent.jsp").forward(request, response);
         } else if (action.equals("enfantSupprimer")) {
             String loginParent = request.getParameter("loginParent");
@@ -183,6 +289,9 @@ public class ControleurParent extends HttpServlet {
             parentDAO.supprimerEnfant(loginParent, prenom);
             FicheParent ficheParent = parentDAO.getFicheParent(loginParent);
             request.setAttribute("parent", ficheParent);
+            PeriodeDAO periodeDAO = new PeriodeDAO(ds);
+            List<Periode> periodes = periodeDAO.getPeriodes();
+            request.setAttribute("estEnCours", periodeEncours(periodes));
             request.getRequestDispatcher("WEB-INF/parent.jsp").forward(request, response);
         } else if (action.equals("enfantInfo")) {
             String loginParent = request.getParameter("loginParent");
@@ -198,6 +307,9 @@ public class ControleurParent extends HttpServlet {
                 }
             }
             request.setAttribute("loginParent", loginParent);
+            PeriodeDAO periodeDAO = new PeriodeDAO(ds);
+            List<Periode> periodes = periodeDAO.getPeriodes();
+            request.setAttribute("estEnCours", periodeEncours(periodes));
             request.getRequestDispatcher("WEB-INF/enfant.jsp").forward(request, response);
         } else if (action.equals("logout")) {
             request.logout();
@@ -207,6 +319,9 @@ public class ControleurParent extends HttpServlet {
                 String login = request.getParameter("loginParent");
                 FicheParent ficheParent = parentDAO.getFicheParent(login);
                 request.setAttribute("parent", ficheParent);
+                PeriodeDAO periodeDAO = new PeriodeDAO(ds);
+                List<Periode> periodes = periodeDAO.getPeriodes();
+                request.setAttribute("estEnCours", periodeEncours(periodes));
                 request.getRequestDispatcher("/WEB-INF/parent.jsp").forward(request, response);
         }else if (action.equals("ajoutActivite")) {
             // On souhaite recuperer toute la liste des activites disponible pour cette enfant
@@ -241,6 +356,9 @@ public class ControleurParent extends HttpServlet {
                 }
             }
             request.setAttribute("loginParent", loginParent);
+            PeriodeDAO periodeDAO = new PeriodeDAO(ds);
+            List<Periode> periodes = periodeDAO.getPeriodes();
+            request.setAttribute("estEnCours", periodeEncours(periodes));
             request.getRequestDispatcher("WEB-INF/enfant.jsp").forward(request, response);
         } else if (action.equals("activiteSupprimer")) {
             // On parse la value choisi pour les elements importants
@@ -261,6 +379,9 @@ public class ControleurParent extends HttpServlet {
                 }
             }
             request.setAttribute("loginParent", loginParent);
+            PeriodeDAO periodeDAO = new PeriodeDAO(ds);
+            List<Periode> periodes = periodeDAO.getPeriodes();
+            request.setAttribute("estEnCours", periodeEncours(periodes));
             request.getRequestDispatcher("WEB-INF/enfant.jsp").forward(request, response);
         }
     }

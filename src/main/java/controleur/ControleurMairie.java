@@ -284,11 +284,21 @@ public class ControleurMairie extends HttpServlet {
         List<Activite> activites = activiteDAO.getListeActivite();
         List<String> accompagnateurs = accompagnateurDAO.getListEmail();
         List<Periode> periodes = periodeDAO.getPeriodes();
+        request.setAttribute("estEnCours", periodeEncours(periodes));
         request.setAttribute("regimes", regimes);
         request.setAttribute("activites", activites);
         request.setAttribute("accompagnateurs", accompagnateurs);     
         request.setAttribute("periodes", periodes);
         request.getRequestDispatcher("/WEB-INF/mairie.jsp").forward(request, response);
+    }
+    
+    public boolean periodeEncours(List<Periode> periodes) {
+        for (Periode periode : periodes) {
+            if (periode.estEnCours()) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

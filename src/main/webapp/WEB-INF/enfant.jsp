@@ -39,7 +39,7 @@
                         <table class="table table-bordered table-hover">
                              <thead class="thead-light">
                                 <tr>
-                                  <th scope="col">Activité</th>
+                                  <th scope="col">Activité demandée pour la prochaine période</th>
                                 </tr>
                              </thead>
                             <c:forEach items="${activites}" var="activite">
@@ -51,9 +51,24 @@
                         </table>
                     </div>
                     <div class="row">
+                        <table class="table table-bordered table-hover">
+                             <thead class="thead-light">
+                                <tr>
+                                  <th scope="col">Activité reservée pour la période en cours</th>
+                                </tr>
+                             </thead>
+                            <c:forEach items="${activites}" var="activite">
+                                <tr>
+                                    <td>${activite}</td>
+                                    <td><a href="controleurParent?action=activiteSupprimer&prenomEnfant=${ficheEnfant.getPrenom().trim()}&loginParent=${loginParent.trim()}&nomActivite=${activite.getNom()}&creneauxJour=${activite.getCreneauxJour()}&creneauxHeure=${activite.getCreneauxHeure()}"><input type="button"value="Ne vient pas cette semaine"></a></td>
+                                </tr>
+                            </c:forEach>                   
+                        </table>
+                    </div>
+                    <div class="row">
                         <form method="get" action="controleurParent">
                             <div class="form-group">
-                                <input type="submit" value="Ajouter activité">
+                                <input type="submit" value="Ajouter activité" <c:if test="${estEnCours == true}">disabled</c:if> />
                             </div>
                             <input type="hidden" name="action" value="ajoutActivite" />
                             <input type="hidden" name="nom" value="${ficheEnfant.getNom()}" />

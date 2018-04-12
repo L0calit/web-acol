@@ -5,56 +5,81 @@
  */
 package modele;
 
-import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.Date;
-
 
 /**
  *
  * @author boussanl
  */
 public class Periode {
-    private Date dateDebut;
-    private Date dateFin;
-    private final String dateActuelle;
-    private Date jour;
+    private GregorianCalendar dateDebut;
+    private GregorianCalendar dateFin;
+    private GregorianCalendar dateActuelle;
 
-    public Periode(Date dateDebut, Date dateFin) {
+    public Periode(GregorianCalendar dateDebut, GregorianCalendar dateFin) {
         this.dateDebut = dateDebut;
-        this.dateFin = dateFin;
-        GregorianCalendar date = new GregorianCalendar(); 
-        this.dateActuelle = date.get(GregorianCalendar.DAY_OF_MONTH)+"/" + 
-                            date.get(GregorianCalendar.MONTH) + "/" + 
-                            date.get(GregorianCalendar.YEAR);
-        this.jour = Calendar.getInstance().getTime();
-        
+        this.dateFin = dateFin;    
+        this.dateActuelle = new GregorianCalendar();     
     }
     
     public Periode(){
-        GregorianCalendar date = new GregorianCalendar(); 
-        this.dateActuelle = date.get(GregorianCalendar.DAY_OF_MONTH)+"/" + 
-                            date.get(GregorianCalendar.MONTH) + "/" + 
-                            date.get(GregorianCalendar.YEAR);
-        
+        this.dateActuelle = new GregorianCalendar(); 
     }
-    public Date getDateDebut() {
-        return dateDebut;
+    
+    public Periode(String dateDebut, String dateFin) {
+        String[] debut = dateDebut.split("-");
+        String[] fin = dateFin.split("-");
+        this.dateDebut = new GregorianCalendar(Integer.parseInt(debut[0].trim()), Integer.parseInt(debut[1].trim()), Integer.parseInt(debut[2].trim()));
+        this.dateFin = new GregorianCalendar(Integer.parseInt(fin[0].trim()), Integer.parseInt(fin[1].trim()), Integer.parseInt(fin[2].trim()));
+        this.dateActuelle = new GregorianCalendar();
     }
 
-    public Date getDateFin() {
+    public GregorianCalendar getDateDebut() {
+        return dateDebut;
+    }
+    
+    public boolean estEnCours() {
+        return dateActuelle.after(dateDebut) && dateActuelle.before(dateFin);
+    }
+    
+    public String dateToString(GregorianCalendar date) {
+        String result = "";
+        int year = date.get(GregorianCalendar.YEAR);
+        int month = date.get(GregorianCalendar.MONTH);
+        int day = date.get(GregorianCalendar.DAY_OF_MONTH);
+        if (year < 1000) {
+            result += "0";
+        }
+        result += year + "-";
+        if (month < 10) {
+            result += "0";
+        }
+        result += month + "-";
+        if (day < 10) {
+            result += "0";
+        }
+        result += day;
+        return result;
+    }
+    
+    public String debutToString() {
+        return dateToString(dateDebut);
+    }
+    
+    public String dateActuelleToString() {
+        return dateToString(dateActuelle);
+    }
+    
+    public String finToString() {
+        return dateToString(dateFin);
+    }
+
+    public GregorianCalendar getDateFin() {
         return dateFin;
     }
 
-    public String getDateActuelle() {
+    public GregorianCalendar getDateActuelle() {
         return dateActuelle;
     }
-    
-    public Date getJour(){
-        return jour;
-    }
-            
-    
-
     
 }
