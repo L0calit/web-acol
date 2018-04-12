@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
+import modele.Activite;
 import modele.Cantine;
 import modele.FicheEnfant;
 import modele.FicheParent;
@@ -188,22 +189,79 @@ public class ControleurParent extends HttpServlet {
             String prenom = request.getParameter("enfant");
             ParentDAO parentDAO = new ParentDAO(ds);
             FicheParent ficheParent = parentDAO.getFicheParent(loginParent);
+            ActiviteDAO activiteDAO = new ActiviteDAO(ds);
             for (FicheEnfant enfant : ficheParent.getEnfants()) {
                 if (enfant.getPrenom().equals(prenom)) {
                     request.setAttribute("ficheEnfant", enfant);
+                    List<Activite> activites = activiteDAO.getReserver(enfant, loginParent);
+                    request.setAttribute("activites", activites);
                 }
             }
+            request.setAttribute("loginParent", loginParent);
             request.getRequestDispatcher("WEB-INF/enfant.jsp").forward(request, response);
         } else if (action.equals("logout")) {
             request.logout();
             response.sendRedirect("index.jsp");
-        } else if (action.equals("ajoutActivite")) {
+        } else if (action.equals("retourParent")) {
+                ParentDAO parentDAO = new ParentDAO(ds);
+                String login = request.getParameter("loginParent");
+                FicheParent ficheParent = parentDAO.getFicheParent(login);
+                request.setAttribute("parent", ficheParent);
+                request.getRequestDispatcher("/WEB-INF/parent.jsp").forward(request, response);
+        }else if (action.equals("ajoutActivite")) {
             // On souhaite recuperer toute la liste des activites disponible pour cette enfant
             ActiviteDAO activiteDAO = new ActiviteDAO(ds);
-            FicheEnfant ficheEnfant = (FicheEnfant) request.getAttribute("enfant");
-            activiteDAO.getListeActivite(ficheEnfant);
-            request.setAttribute("ficheEnfant", ficheEnfant);
+            String nom = request.getParameter("nom");
+            String prenom = request.getParameter("prenom");
+            String loginParent = request.getParameter("loginParent");
+            ParentDAO parentDAO = new ParentDAO(ds);
+            FicheEnfant ficheEnfant = parentDAO.getFicheEnfant(loginParent, nom, prenom);
+            List<Activite> listActivite = activiteDAO.getListeActivite(ficheEnfant, loginParent);
+            request.setAttribute("activites", listActivite);
+            request.setAttribute("prenomEnfant", prenom);
+            request.setAttribute("loginParent", loginParent);
             request.getRequestDispatcher("WEB-INF/ajoutActivite.jsp").forward(request, response);  
+        } else if (action.equals("activiteAjouter")) {
+            // On parse la value choisi pour les elements importants
+            String activite = request.getParameter("activiteChoisi");
+            String prenomEnfant = request.getParameter("prenomEnfant");
+            String loginParent = request.getParameter("loginParent");
+            ParentDAO parentDAO = new ParentDAO(ds);
+            ActiviteDAO activiteDAO = new ActiviteDAO(ds);
+            FicheParent ficheParent = parentDAO.getFicheParent(loginParent);
+            String nomActivite = activite.split("le")[0];
+            String creneauxJour = activite.split("le")[1].split("à")[0];
+            String creneauxHeure = activite.split("le")[1].split("à")[1];
+            activiteDAO.reserverActivite(prenomEnfant, loginParent, nomActivite, creneauxJour, creneauxHeure);
+            for (FicheEnfant enfant : ficheParent.getEnfants()) {
+                if (enfant.getPrenom().trim().equals(prenomEnfant.trim())) {
+                    request.setAttribute("ficheEnfant", enfant);
+                    List<Activite> activites = activiteDAO.getReserver(enfant, loginParent);
+                    request.setAttribute("activites", activites);
+                }
+            }
+            request.setAttribute("loginParent", loginParent);
+            request.getRequestDispatcher("WEB-INF/enfant.jsp").forward(request, response);
+        } else if (action.equals("activiteSupprimer")) {
+            // On parse la value choisi pour les elements importants
+            String nomActivite = request.getParameter("nomActivite");
+            String prenomEnfant = request.getParameter("prenomEnfant");
+            String loginParent = request.getParameter("loginParent");
+            String creneauxJour = request.getParameter("creneauxJour");
+            String creneauxHeure = request.getParameter("creneauxHeure");
+            ParentDAO parentDAO = new ParentDAO(ds);
+            ActiviteDAO activiteDAO = new ActiviteDAO(ds);
+            activiteDAO.supprimerActivite(prenomEnfant, loginParent, nomActivite, creneauxJour, creneauxHeure);
+            FicheParent ficheParent = parentDAO.getFicheParent(loginParent);
+            for (FicheEnfant enfant : ficheParent.getEnfants()) {
+                if (enfant.getPrenom().trim().equals(prenomEnfant.trim())) {
+                    request.setAttribute("ficheEnfant", enfant);
+                    List<Activite> activites = activiteDAO.getReserver(enfant, loginParent);
+                    request.setAttribute("activites", activites);
+                }
+            }
+            request.setAttribute("loginParent", loginParent);
+            request.getRequestDispatcher("WEB-INF/enfant.jsp").forward(request, response);
         }
     }
 }

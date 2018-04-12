@@ -65,6 +65,31 @@ public class ParentDAO extends AbstractDataBaseDAO {
 	return result;
     }
     
+    public FicheEnfant getFicheEnfant(String login, String nomEnfant, String prenomEnfant) {
+        FicheEnfant result = null;
+        try (
+	     Connection conn = getConn();
+	     Statement st = conn.createStatement();
+	     ) {
+  
+            ResultSet rs = st.executeQuery("SELECT * FROM Enfant WHERE loginParent='" + login +"'"
+                    + "AND nom='" + nomEnfant + "' AND prenom='" + prenomEnfant + "'");
+            while (rs.next()) {
+                String sexe = rs.getString("sexe");
+                String dateNaissance = rs.getString("datedeNaissance");
+                String divers = rs.getString("divers");
+                String regime = rs.getString("regime");
+                String classe = rs.getString("classe");
+                Cantine cantine = new Cantine(rs.getString("cantine"));
+                result = new FicheEnfant(sexe, classe, dateNaissance, divers, regime, null, cantine, null, nomEnfant, prenomEnfant);
+            }
+
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD " + e.getMessage(), e);
+	}
+	return result;
+    }
+    
     public boolean verify(String login, String password) {
         boolean test = false;
         try (

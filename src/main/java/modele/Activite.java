@@ -34,8 +34,10 @@ public class Activite extends Prestation{
     }
     
     public boolean testClasse(String element) {
-        if (classe.contains(element)) {
-            return true;
+        for (String string : classe) {
+            if (string.trim().equalsIgnoreCase(element.trim())) {
+                return true;
+            }
         }
         return false;
     }
@@ -69,7 +71,6 @@ public class Activite extends Prestation{
         return classe.toString();
     }
 
-
     public String getNom() {
         return nom;
     }
@@ -81,5 +82,10 @@ public class Activite extends Prestation{
     public String getAccompagnateur2() {
         return accompagnateur2;
     }
-    
+
+    @Override
+    public String toString() {
+        String result = nom + " le " + creneauxJour + " à " + creneauxHeure;
+        return result;
+    }
 }

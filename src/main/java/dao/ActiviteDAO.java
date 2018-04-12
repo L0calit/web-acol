@@ -24,7 +24,7 @@ public class ActiviteDAO extends AbstractDataBaseDAO {
     }
     
     /**
-     * Renvoie la liste des regimes de la table regimes.
+     * Renvoie la liste des activites de la table activites.
      */
     public List<Activite> getListeActivite() {
         List<Activite> result = new ArrayList<Activite>();
@@ -58,9 +58,9 @@ public class ActiviteDAO extends AbstractDataBaseDAO {
     /**
      * Renvoie la liste des activites de la table activite dont l'enfant a le droit de selectionner.
      */
-    public List<Activite> getListeActivite(FicheEnfant ficheEnfant) {
+    public List<Activite> getListeActivite(FicheEnfant ficheEnfant, String loginParent) {
         List<Activite> listActivite = this.getListeActivite();
-        List<Activite> reserved = this.getReserver(ficheEnfant);
+        List<Activite> reserved = this.getReserver(ficheEnfant, loginParent);
         List<Activite> result = new ArrayList<Activite>();
         // On enleve toutes les activites qui ont déjà été reservé par l'enfant
         listActivite.removeAll(reserved);
@@ -77,17 +77,17 @@ public class ActiviteDAO extends AbstractDataBaseDAO {
     /**
      * Renvoie la liste des activités reservé par l'enfant
      */
-    public List<Activite> getReserver(FicheEnfant ficheEnfant) {
+    public List<Activite> getReserver(FicheEnfant ficheEnfant, String loginParent) {
         List<Activite> result = new ArrayList<Activite>();
         try (
 	     Connection conn = getConn();
 	     Statement st = conn.createStatement();
 	     ) {
-            ResultSet rs = st.executeQuery("SELECT * FROM ActiviteReserve AS AR JOIN Activites AS A ON "
-                    + "AR.nomActivite=A.nom AND AR.creneauxJour=A.creneauxJour"
-                    + "AR.creneauxHeure=A.creneauxHeure WHERE AR.prenomEnfant='"
+            ResultSet rs = st.executeQuery("SELECT * FROM ActiviteReserve AR JOIN Activites A ON "
+                    + "nomActivite=nom AND AR.creneauxJour=A.creneauxJour "
+                    + "AND AR.creneauxHeure=A.creneauxHeure WHERE AR.prenomEnfant='"
                     + ficheEnfant.getPrenom() + "' AND AR.loginParent='" + 
-                    ficheEnfant.getParents().getLogin() + "'");
+                    loginParent + "'");
             while (rs.next()) {
                 String nom = rs.getString("nom");
                 String classe = rs.getString("classe");
@@ -155,6 +155,47 @@ public class ActiviteDAO extends AbstractDataBaseDAO {
                 return true;
             }
             return false;
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD " + e.getMessage(), e);
+        }
+    }
+    
+    /**
+     * Reserver l'activité dans la table activité
+     */
+    public void reserverActivite(String prenomEnfant, String loginParent, String nomActivite, String creneauxJour, String creneauxHeure) {
+        try (
+	     Connection conn = getConn();
+	     PreparedStatement st = conn.prepareStatement
+	       ("INSERT INTO activitereserve (prenomEnfant, loginParent, nomActivite, creneauxJour, creneauxHeure, dateDebut, dateFin) VALUES (?, ?, ?, ?, ?, ?, ?)");
+	     ) {
+            st.setString(1, prenomEnfant.trim());
+            st.setString(2, loginParent.trim());
+            st.setString(3, nomActivite.trim());
+            st.setString(4, creneauxJour.trim());
+            st.setString(5, creneauxHeure.trim());
+            st.setString(6, "todo");
+            st.setString(7, "todo");
+            st.executeUpdate();
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD " + e.getMessage(), e);
+        }
+    }
+    
+    /**
+     * Supprimer l'activité dans la table activité
+     */
+    public void supprimerActivite(String prenomEnfant, String loginParent, String nomActivite, String creneauxJour, String creneauxHeure) {
+        try (
+	     Connection conn = getConn();
+	     PreparedStatement st = conn.prepareStatement
+	       ("DELETE FROM activitereserve WHERE prenomEnfant='" + prenomEnfant.trim()
+                       + "' and loginparent='" + loginParent.trim()
+                       + "' and nomActivite='" + nomActivite.trim()
+                       + "' and creneauxJour='" + creneauxJour.trim()
+                       + "' and creneauxHeure='" + creneauxHeure.trim() + "'");
+	     ) {
+            st.executeUpdate();
         } catch (SQLException e) {
             throw new DAOException("Erreur BD " + e.getMessage(), e);
         }
