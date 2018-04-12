@@ -199,7 +199,9 @@
             </div>
         </div>
         <div id="container_periode" class="container">
-            <h2>Période</h2>
+            <%@ page import="modele.Periode" %>
+            <%! Periode periode = new Periode();%>
+            <h2>Période - Jour : <%=periode.getJour()%> </h2>
             <div class="row theme_classique page_activité">
                 <div class="col">
                  <table border="1" class="table table-bordered table-hover">
