@@ -19,6 +19,10 @@ public class Periode {
         this.dateDebut = dateDebut;
         this.dateFin = dateFin;
     }
+    
+    public Date getDateActuelle(){
+        Date d = new Date();
+    }
 
     public Date getDateDebut() {
         return dateDebut;

@@ -43,16 +43,6 @@
                                   <th scope="col">Mail de l'accompagnateur2</th>
                                 </tr>
                               </thead>
-                            <!--<tr>
-                                <th>Nom</th>
-                                <th>Jour</th>
-                                <th>Horaire</th>
-                                <th>Classe</th>
-                                <th>Prix</th>
-                                <th>Effectif</th>
-                                <th>Mail de l'accompagnateur 1</th>
-                                <th>Mail de l'accompagnateur 2</th>
-                            </tr>-->
                             <tbody>
                             <c:forEach items="${activites}" var="activite">
                                 <tr>
@@ -106,8 +96,8 @@
                             </div>
                             <div class="form-group">
                             Classe(s) concernées : 
-                            <table border="1">
-                              <thead>
+                            <table border="1" class="table table-bordered table-hover">
+                              <thead class="thead-light">
                                   <tr>
                                       <th>Petite Section</th>
                                       <th>Moyenne Section</th>
@@ -209,7 +199,7 @@
             </div>
         </div>
         <div id="container_periode" class="container">
-            <h2>Periode</h2>
+            <h2>Période</h2>
             <div class="row theme_classique page_activité">
                 <div class="col">
                  <table border="1" class="table table-bordered table-hover">
