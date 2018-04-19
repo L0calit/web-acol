@@ -43,10 +43,12 @@
                                 </tr>
                              </thead>
                             <c:forEach items="${activites}" var="activite">
-                                <tr>
-                                    <td>${activite}</td>
-                                    <td><a href="controleurParent?action=activiteSupprimer&prenomEnfant=${ficheEnfant.getPrenom().trim()}&loginParent=${loginParent.trim()}&nomActivite=${activite.getNom()}&creneauxJour=${activite.getCreneauxJour()}&creneauxHeure=${activite.getCreneauxHeure()}"><input type="button"value="supprimer"></a></td>
-                                </tr>
+                                <c:if test="${activite.getPeriode().estEnCours() == false}">
+                                    <tr>
+                                        <td>${activite}</td>
+                                        <td><a href="controleurParent?action=activiteSupprimer&prenomEnfant=${ficheEnfant.getPrenom().trim()}&loginParent=${loginParent.trim()}&nomActivite=${activite.getNom()}&creneauxJour=${activite.getCreneauxJour()}&creneauxHeure=${activite.getCreneauxHeure()}"><input type="button"value="supprimer"></a></td>
+                                    </tr>                                    
+                                </c:if>
                             </c:forEach>                   
                         </table>
                     </div>
@@ -55,20 +57,38 @@
                              <thead class="thead-light">
                                 <tr>
                                   <th scope="col">Activité reservée pour la période en cours</th>
+                                  <th scope="col">Annulation pour la prochaine séance 48h en avance</th>
                                 </tr>
                              </thead>
                             <c:forEach items="${activites}" var="activite">
-                                <tr>
-                                    <td>${activite}</td>
-                                    <td><a href="controleurParent?action=activiteSupprimer&prenomEnfant=${ficheEnfant.getPrenom().trim()}&loginParent=${loginParent.trim()}&nomActivite=${activite.getNom()}&creneauxJour=${activite.getCreneauxJour()}&creneauxHeure=${activite.getCreneauxHeure()}"><input type="button"value="Ne vient pas cette semaine"></a></td>
-                                </tr>
+                                <c:if test="${activite.getPeriode().estEnCours() == true}">
+                                    <tr>
+                                        <td>${activite}</td>
+                                        <td><a href="controleurParent?action=activiteAbsent&prenomEnfant=${ficheEnfant.getPrenom().trim()}&loginParent=${loginParent.trim()}&nomActivite=${activite.getNom()}&creneauxJour=${activite.getCreneauxJour()}&creneauxHeure=${activite.getCreneauxHeure()}"><input type="button"value="Ne peux être présent"></a></td>
+                                    </tr>     
+                                     <c:if test="${delai48h == true}">
+                                              <div style="color:red;">
+                                                  Il est trop tard pour annuler cette séance 
+                                              </div>
+                                     </c:if>
+                                     <c:if test="${annule == true}">
+                                              <div style="color:red;">
+                                                  La séance a été annuler correctement 
+                                              </div>
+                                     </c:if>
+                                     <c:if test="${dejaAnnule == true}">
+                                              <div style="color:red;">
+                                                  Vous avez déjà annuler cette séance 
+                                              </div>
+                                     </c:if>                                    
+                                </c:if>
                             </c:forEach>                   
                         </table>
                     </div>
                     <div class="row">
                         <form method="get" action="controleurParent">
                             <div class="form-group">
-                                <input type="submit" value="Ajouter activité" <c:if test="${estEnCours == true}">disabled</c:if> />
+                                <input type="submit" value="Ajouter activité" />
                             </div>
                             <input type="hidden" name="action" value="ajoutActivite" />
                             <input type="hidden" name="nom" value="${ficheEnfant.getNom()}" />

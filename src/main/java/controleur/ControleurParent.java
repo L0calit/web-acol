@@ -1,7 +1,9 @@
 package controleur;
 
+import dao.AbsenceDAO;
 import dao.ActiviteDAO;
 import dao.DAOException;
+import dao.FactureDAO;
 import dao.ParentDAO;
 import dao.PeriodeDAO;
 import dao.RegimeDAO;
@@ -17,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import modele.Activite;
 import modele.Cantine;
+import modele.Facture;
 import modele.FicheEnfant;
 import modele.FicheParent;
 import modele.Periode;
@@ -88,6 +91,7 @@ public class ControleurParent extends HttpServlet {
                 invalidParameters(request, response);
                 return;
             } else if (action.equals("connexion")) {
+                testMiseAJourBDD();
                 actionConnexion(request, response, parentDAO);
             } else if (action.equals("modifParent")) {
                 actionModifierParent(request, response, parentDAO);
@@ -102,6 +106,49 @@ public class ControleurParent extends HttpServlet {
             erreurBD(request, response, e);
         }
     }
+    
+    public void testMiseAJourBDD() {
+        PeriodeDAO periodeDAO = new PeriodeDAO(ds);
+        List<Periode> periodes = periodeDAO.getPeriodes();
+        for (Periode periode : periodes) {
+            if (periode.estFini()) {
+                // On calcule toutes les factures
+                ParentDAO parentDAO = new ParentDAO(ds);
+                FactureDAO factureDAO = new FactureDAO(ds);
+                ActiviteDAO activiteDAO = new ActiviteDAO(ds);
+                AbsenceDAO absenceDAO = new AbsenceDAO(ds);
+                List<String> listeParent = parentDAO.getParents();
+                for (String loginParent : listeParent) {
+                    FicheParent ficheParent = parentDAO.getFicheParent(loginParent);
+                    int prixTotal = 0;
+                    int montantEnlever = 0;
+                    for (FicheEnfant ficheEnfant : ficheParent.getEnfants()) {
+                        List<Activite> activites = activiteDAO.getReserver(ficheEnfant, loginParent, periode);
+                        for (Activite activite : activites) {
+                            prixTotal += activite.getPrix();
+                            montantEnlever += activite.getPrixIndiv() * absenceDAO.getAbsences(activite.getNom(),
+                                    activite.getCreneauxJour(), activite.getCreneauxHeure(),
+                                    loginParent, ficheEnfant.getPrenom());
+                        }
+                    }
+                    int montantFinal = prixTotal - montantEnlever;
+                    factureDAO.ajoutFacture(loginParent, periode.debutToString(), periode.finToString(), prixTotal, montantEnlever, montantFinal);
+                }
+                
+                // On supprime toutes les activites de cette periode
+                // On supprime toutes les reservations de cette periode
+                activiteDAO.finPeriode(periode);
+
+                // On supprime la periode
+                periodeDAO.supprimerPeriode(periode.debutToString(), periode.finToString());
+                
+                // On supprime toutes les absences
+                absenceDAO.finPeriode();
+            }
+        }
+
+    }
+    
     
     /**
      * Modifie les informations du parent dans la base de données
@@ -203,6 +250,9 @@ public class ControleurParent extends HttpServlet {
             PeriodeDAO periodeDAO = new PeriodeDAO(ds);
             List<Periode> periodes = periodeDAO.getPeriodes();
             request.setAttribute("estEnCours", periodeEncours(periodes));
+            FactureDAO factureDAO = new FactureDAO(ds);
+            List<Facture> factures = factureDAO.getAllFacture(login);
+            request.setAttribute("factures", factures);
             request.getRequestDispatcher("/WEB-INF/parent.jsp").forward(request, response);
         } else {
             request.setAttribute("erreurLoginParent", "1");
@@ -234,7 +284,6 @@ public class ControleurParent extends HttpServlet {
         if (action == null) {
             invalidParameters(request, response);
             return;
-        
         } else if (action.equals("ajoutEnfant")) {
             RegimeDAO regimeDAO = new RegimeDAO(ds);
             List<String> regimes = regimeDAO.getListeRegime();
@@ -342,27 +391,14 @@ public class ControleurParent extends HttpServlet {
             String activite = request.getParameter("activiteChoisi");
             String prenomEnfant = request.getParameter("prenomEnfant");
             String loginParent = request.getParameter("loginParent");
-            ParentDAO parentDAO = new ParentDAO(ds);
             ActiviteDAO activiteDAO = new ActiviteDAO(ds);
-            PeriodeDAO periodeDAO = new PeriodeDAO(ds);
-            List<Periode> periodes = periodeDAO.getPeriodes();
-            FicheParent ficheParent = parentDAO.getFicheParent(loginParent);
             String nomActivite = activite.split("le")[0];
             String creneauxJour = activite.split("le")[1].split("à")[0];
             String creneauxHeure = activite.split("le")[1].split("à")[1];
-            Periode periodeSuivante = getPeriodeSuivante(periodes);
+            Periode periode = activiteDAO.getPeriode(nomActivite, creneauxJour, creneauxHeure);
             activiteDAO.reserverActivite(prenomEnfant, loginParent, nomActivite, 
-                    creneauxJour, creneauxHeure, periodeSuivante.debutToString(), periodeSuivante.finToString());
-            for (FicheEnfant enfant : ficheParent.getEnfants()) {
-                if (enfant.getPrenom().trim().equals(prenomEnfant.trim())) {
-                    request.setAttribute("ficheEnfant", enfant);
-                    List<Activite> activites = activiteDAO.getReserver(enfant, loginParent);
-                    request.setAttribute("activites", activites);
-                }
-            }
-            request.setAttribute("loginParent", loginParent);
-            request.setAttribute("estEnCours", periodeEncours(periodes));
-            request.getRequestDispatcher("WEB-INF/enfant.jsp").forward(request, response);
+                    creneauxJour, creneauxHeure, periode.debutToString(), periode.finToString());
+            actualiserPageEnfant(request, response, loginParent, prenomEnfant);
         } else if (action.equals("activiteSupprimer")) {
             // On parse la value choisi pour les elements importants
             String nomActivite = request.getParameter("nomActivite");
@@ -370,23 +406,57 @@ public class ControleurParent extends HttpServlet {
             String loginParent = request.getParameter("loginParent");
             String creneauxJour = request.getParameter("creneauxJour");
             String creneauxHeure = request.getParameter("creneauxHeure");
-            ParentDAO parentDAO = new ParentDAO(ds);
             ActiviteDAO activiteDAO = new ActiviteDAO(ds);
             activiteDAO.supprimerActivite(prenomEnfant, loginParent, nomActivite, creneauxJour, creneauxHeure);
-            FicheParent ficheParent = parentDAO.getFicheParent(loginParent);
-            for (FicheEnfant enfant : ficheParent.getEnfants()) {
-                if (enfant.getPrenom().trim().equals(prenomEnfant.trim())) {
-                    request.setAttribute("ficheEnfant", enfant);
-                    List<Activite> activites = activiteDAO.getReserver(enfant, loginParent);
-                    request.setAttribute("activites", activites);
-                }
+            actualiserPageEnfant(request, response, loginParent, prenomEnfant);
+        } else if (action.equals("activiteAbsent")) {
+            AbsenceDAO absenceDAO = new AbsenceDAO(ds);
+            String nomActivite = request.getParameter("nomActivite");
+            String prenomEnfant = request.getParameter("prenomEnfant");
+            String loginParent = request.getParameter("loginParent");
+            String creneauxJour = request.getParameter("creneauxJour");
+            String creneauxHeure = request.getParameter("creneauxHeure");
+            Periode periode = new Periode();
+            String dateAbsence = periode.getProchainCreneaux(creneauxJour, creneauxHeure);
+            if (dateAbsence.equals("")) {
+                request.setAttribute("delai48h", true);
+            } else {
+                if (!absenceDAO.verificationAbsence(nomActivite, creneauxJour, creneauxHeure, dateAbsence, loginParent, prenomEnfant)) {
+                    absenceDAO.ajoutAbsence(nomActivite, creneauxJour, creneauxHeure, dateAbsence, loginParent, prenomEnfant);
+                    request.setAttribute("annule", true); 
+                } else {
+                    request.setAttribute("dejaAnnule", true);
+                }               
             }
-            request.setAttribute("loginParent", loginParent);
-            PeriodeDAO periodeDAO = new PeriodeDAO(ds);
-            List<Periode> periodes = periodeDAO.getPeriodes();
-            request.setAttribute("estEnCours", periodeEncours(periodes));
-            request.getRequestDispatcher("WEB-INF/enfant.jsp").forward(request, response);
+            actualiserPageEnfant(request, response, loginParent, prenomEnfant);
+        } else if (action.equals("voirFacture")) {
+            String dateDebut = request.getParameter("factureDateDebut");
+            String dateFin = request.getParameter("factureDateFin");
+            String loginParent = request.getParameter("loginParent");
+            FactureDAO factureDAO = new FactureDAO(ds);
+            Facture facture = factureDAO.getFacture(loginParent, dateDebut, dateFin);
+            request.setAttribute("facture", facture);
+            request.getRequestDispatcher("WEB-INF/vueFacture.jsp").forward(request, response);
         }
+    }
+    
+    public void actualiserPageEnfant(HttpServletRequest request, HttpServletResponse response,
+            String loginParent, String prenomEnfant) throws IOException, ServletException {
+        ParentDAO parentDAO = new ParentDAO(ds);
+        ActiviteDAO activiteDAO = new ActiviteDAO(ds);
+        FicheParent ficheParent = parentDAO.getFicheParent(loginParent);
+        for (FicheEnfant enfant : ficheParent.getEnfants()) {
+            if (enfant.getPrenom().trim().equals(prenomEnfant.trim())) {
+                request.setAttribute("ficheEnfant", enfant);
+                List<Activite> activites = activiteDAO.getReserver(enfant, loginParent);
+                request.setAttribute("activites", activites);
+            }
+        }
+        request.setAttribute("loginParent", loginParent);
+        PeriodeDAO periodeDAO = new PeriodeDAO(ds);
+        List<Periode> periodes = periodeDAO.getPeriodes();
+        request.setAttribute("estEnCours", periodeEncours(periodes));
+        request.getRequestDispatcher("WEB-INF/enfant.jsp").forward(request, response);
     }
     
     public Periode getPeriodeSuivante(List<Periode> periodes) {

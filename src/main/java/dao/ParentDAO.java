@@ -16,6 +16,7 @@ import javax.sql.DataSource;
 import modele.Cantine;
 import modele.FicheEnfant;
 import modele.FicheParent;
+import modele.Periode;
 
 /**
  *
@@ -25,6 +26,22 @@ public class ParentDAO extends AbstractDataBaseDAO {
     
     public ParentDAO(DataSource ds) {
         super(ds);
+    }
+    
+    public List<String> getParents() {
+        List<String> result = new ArrayList<>();
+        try (
+	     Connection conn = getConn();
+	     Statement st = conn.createStatement();
+	     ) {
+            ResultSet rs = st.executeQuery("SELECT * FROM Parent");
+            while (rs.next()) {
+                result.add(rs.getString("login"));
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD " + e.getMessage(), e);
+	}
+        return result;
     }
     
     /**

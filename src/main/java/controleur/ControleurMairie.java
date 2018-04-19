@@ -5,12 +5,15 @@
  */
 package controleur;
 
+import dao.AbsenceDAO;
 import dao.ActiviteDAO;
 import dao.DAOException;
 import dao.PeriodeDAO;
 import dao.EmployeDAO;
 import dao.RegimeDAO;
 import dao.AccompagnateurDAO;
+import dao.FactureDAO;
+import dao.ParentDAO;
 import java.io.*;
 import java.util.List;
 import javax.annotation.Resource;
@@ -19,6 +22,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import javax.sql.DataSource;
 import modele.Activite;
+import modele.FicheEnfant;
+import modele.FicheParent;
 import modele.Periode;
 
 /**
@@ -102,6 +107,47 @@ public class ControleurMairie extends HttpServlet {
         }
     }
     
+    public void testMiseAJourBDD() {
+        PeriodeDAO periodeDAO = new PeriodeDAO(ds);
+        List<Periode> periodes = periodeDAO.getPeriodes();
+        for (Periode periode : periodes) {
+            if (periode.estFini()) {
+                // On calcule toutes les factures
+                ParentDAO parentDAO = new ParentDAO(ds);
+                FactureDAO factureDAO = new FactureDAO(ds);
+                ActiviteDAO activiteDAO = new ActiviteDAO(ds);
+                AbsenceDAO absenceDAO = new AbsenceDAO(ds);
+                List<String> listeParent = parentDAO.getParents();
+                for (String loginParent : listeParent) {
+                    FicheParent ficheParent = parentDAO.getFicheParent(loginParent);
+                    int prixTotal = 0;
+                    int montantEnlever = 0;
+                    for (FicheEnfant ficheEnfant : ficheParent.getEnfants()) {
+                        List<Activite> activites = activiteDAO.getReserver(ficheEnfant, loginParent, periode);
+                        for (Activite activite : activites) {
+                            prixTotal += activite.getPrix();
+                            montantEnlever += activite.getPrixIndiv() * absenceDAO.getAbsences(activite.getNom(),
+                                    activite.getCreneauxJour(), activite.getCreneauxHeure(),
+                                    loginParent, ficheEnfant.getPrenom());
+                        }
+                    }
+                    int montantFinal = prixTotal - montantEnlever;
+                    factureDAO.ajoutFacture(loginParent, periode.debutToString(), periode.finToString(), prixTotal, montantEnlever, montantFinal);
+                }
+                
+                // On supprime toutes les activites de cette periode
+                // On supprime toutes les reservations de cette periode
+                activiteDAO.finPeriode(periode);
+
+                // On supprime la periode
+                periodeDAO.supprimerPeriode(periode.debutToString(), periode.finToString());
+            }
+        }
+        // On supprime toutes les absences
+        AbsenceDAO absenceDAO = new AbsenceDAO(ds);
+        absenceDAO.finPeriode();
+    }
+    
     /**
      * Permet l'ajout de la période à la base de données tout en vérifiant que
      * les données sont correctes
@@ -110,8 +156,18 @@ public class ControleurMairie extends HttpServlet {
      */
     public void actionAjouterPeriode(HttpServletRequest request, PeriodeDAO periodeDAO) {
         // Verifier que la date de début est avant la date de fin 
-        // Verifier que la periode n'existe pas deja 
-        periodeDAO.ajouterPeriode(request.getParameter("dateDebut"), request.getParameter("dateFin"));
+        // Verifier que la periode n'existe pas deja
+        Periode periodeAjouter = new Periode(request.getParameter("dateDebut"), request.getParameter("dateFin"));
+        List<Periode> periodes = periodeDAO.getPeriodes();
+        if (periodeAjouter.avantDateActuelle()) {
+            request.setAttribute("avantDateActuelle", true);
+        } else if (periodeAjouter.chevauchementList(periodes)) {
+            request.setAttribute("chevauchePeriode", true);
+        } else if (periodeAjouter.periodeIncorrecte()) {
+            request.setAttribute("periodeIncorrecte", true);
+        } else {
+            periodeDAO.ajouterPeriode(periodeAjouter.debutToString(), periodeAjouter.finToString());
+        }
     }
     
     /**
@@ -173,6 +229,7 @@ public class ControleurMairie extends HttpServlet {
                 invalidParameters(request, response);
                 return;
             } else if (action.equals("connexion")) {
+                testMiseAJourBDD();
                 actionConnexion(request, response, employeDAO);
             }else if (action.equals("creationCompteMairie")) {
                 actionCreationMairie(request, response, employeDAO);

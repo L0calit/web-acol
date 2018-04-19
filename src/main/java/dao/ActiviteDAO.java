@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import javax.sql.DataSource;
 import modele.FicheEnfant;
+import modele.Periode;
 
 /**
  *
@@ -46,8 +47,9 @@ public class ActiviteDAO extends AbstractDataBaseDAO {
                 }
                 String creneauxJour = rs.getString("creneauxJour");
                 String creneauxHeure = rs.getString("creneauxHeure");
+                Periode periode = new Periode(rs.getString("dateDebut"), rs.getString("dateFin"));
                 result.add(new Activite(nom, creneauxJour, creneauxHeure, listeClasse, rs.getInt("prix"), 
-                        rs.getInt("effectif"), rs.getString("mailaccompagnateur1"), rs.getString("mailaccompagnateur2")));
+                        rs.getInt("effectif"), rs.getString("mailaccompagnateur1"), rs.getString("mailaccompagnateur2"), periode));
             }
         } catch (SQLException e) {
             throw new DAOException("Erreur BD " + e.getMessage(), e);
@@ -65,8 +67,8 @@ public class ActiviteDAO extends AbstractDataBaseDAO {
         // On enleve toutes les activites qui ont déjà été reservé par l'enfant
         listActivite.removeAll(reserved);
         for (Activite activite : listActivite) {
-            // Verifier que l'enfant est bien dans une classe autorisé pour cette activité
-            // Verifier que l'enfant n'a pas déjà selectionner une activité lors de ce créneaux
+            // Verifie que l'enfant est bien dans une classe autorisé pour cette activité
+            // Verifie que l'enfant n'a pas déjà selectionner une activité lors de ce créneaux
             if (activite.testClasse(ficheEnfant.getClasse()) && activite.testCreneaux(reserved)) {
                 result.add(activite);
             }
@@ -74,11 +76,29 @@ public class ActiviteDAO extends AbstractDataBaseDAO {
         return result;
     }
     
+    public Periode getPeriode(String nomActivite, String creneauxJour, String creneauxHeure) {
+        Periode result = null;
+        try (
+	     Connection conn = getConn();
+	     Statement st = conn.createStatement();
+	     ) {
+            ResultSet rs = st.executeQuery("SELECT * FROM activites WHERE nom='"+nomActivite.trim()+"' and creneauxJour='"+creneauxJour.trim()+"' and creneauxHeure='"+creneauxHeure.trim()+"'");
+            if (rs.next()) {
+                String dateDebut = rs.getString("dateDebut");
+                String dateFin = rs.getString("dateFin");
+                result = new Periode(dateDebut, dateFin);
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD " + e.getMessage(), e);
+	}
+	return result;
+    }
+    
     /**
      * Renvoie la liste des activités reservé par l'enfant
      */
     public List<Activite> getReserver(FicheEnfant ficheEnfant, String loginParent) {
-        List<Activite> result = new ArrayList<Activite>();
+        List<Activite> result = new ArrayList<>();
         try (
 	     Connection conn = getConn();
 	     Statement st = conn.createStatement();
@@ -91,7 +111,42 @@ public class ActiviteDAO extends AbstractDataBaseDAO {
             while (rs.next()) {
                 String nom = rs.getString("nom");
                 String classe = rs.getString("classe");
-                List<String> listeClasse = new ArrayList<String>();
+                List<String> listeClasse = new ArrayList<>();
+                if (classe.contains("/")) {
+                    String[] classeDiviser = classe.split("/");
+                    listeClasse = Arrays.asList(classeDiviser);
+                }
+                else {
+                    listeClasse.add(classe);
+                }
+                String creneauxJour = rs.getString("creneauxJour");
+                String creneauxHeure = rs.getString("creneauxHeure");
+                Periode periode = new Periode(rs.getString("dateDebut"), rs.getString("dateFin"));
+                result.add(new Activite(nom, creneauxJour, creneauxHeure, listeClasse, rs.getInt("prix"), 
+                        rs.getInt("effectif"), rs.getString("mailaccompagnateur1"), rs.getString("mailaccompagnateur2"), periode));
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD " + e.getMessage(), e);
+	}
+	return result;
+    }
+    
+    public List<Activite> getReserver(FicheEnfant ficheEnfant, String loginParent, Periode periode) {
+        List<Activite> result = new ArrayList<>();
+        try (
+	     Connection conn = getConn();
+	     Statement st = conn.createStatement();
+	     ) {
+            ResultSet rs = st.executeQuery("SELECT * FROM ActiviteReserve AR JOIN Activites A ON "
+                    + "nomActivite=nom AND AR.creneauxJour=A.creneauxJour "
+                    + "AND AR.creneauxHeure=A.creneauxHeure WHERE AR.prenomEnfant='"
+                    + ficheEnfant.getPrenom() + "' AND AR.loginParent='" + 
+                    loginParent + "' AND AR.dateDebut='" + periode.debutToString().trim() +
+                    "' AND AR.dateFin='" + periode.finToString().trim() + "'");
+            while (rs.next()) {
+                String nom = rs.getString("nom");
+                String classe = rs.getString("classe");
+                List<String> listeClasse = new ArrayList<>();
                 if (classe.contains("/")) {
                     String[] classeDiviser = classe.split("/");
                     listeClasse = Arrays.asList(classeDiviser);
@@ -102,14 +157,13 @@ public class ActiviteDAO extends AbstractDataBaseDAO {
                 String creneauxJour = rs.getString("creneauxJour");
                 String creneauxHeure = rs.getString("creneauxHeure");
                 result.add(new Activite(nom, creneauxJour, creneauxHeure, listeClasse, rs.getInt("prix"), 
-                        rs.getInt("effectif"), rs.getString("mailaccompagnateur1"), rs.getString("mailaccompagnateur2")));
+                        rs.getInt("effectif"), rs.getString("mailaccompagnateur1"), rs.getString("mailaccompagnateur2"), periode));
             }
         } catch (SQLException e) {
             throw new DAOException("Erreur BD " + e.getMessage(), e);
 	}
 	return result;
     }
-    
     /**
      * Ajoute l'activité dans la table activité
      */
@@ -179,6 +233,23 @@ public class ActiviteDAO extends AbstractDataBaseDAO {
             st.setString(6, dateDebut.trim());
             st.setString(7, dateFin.trim());
             st.executeUpdate();
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD " + e.getMessage(), e);
+        }
+    }
+    
+    public void finPeriode(Periode periode) {
+        try (
+	     Connection conn = getConn();
+	     PreparedStatement st = conn.prepareStatement
+	       ("DELETE FROM activitereserve WHERE dateDebut='" + periode.debutToString().trim()
+                       + "' and dateFin='" + periode.finToString().trim() + "'");
+	     PreparedStatement st2 = conn.prepareStatement
+	       ("DELETE FROM activites WHERE dateDebut='" + periode.debutToString().trim()
+                       + "' and dateFin='" + periode.finToString().trim() + "'");
+                ) {
+            st.executeUpdate();
+            st2.executeUpdate();
         } catch (SQLException e) {
             throw new DAOException("Erreur BD " + e.getMessage(), e);
         }

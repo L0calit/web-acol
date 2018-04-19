@@ -74,9 +74,19 @@
                 </div>  
             </div>
             <div id="facture" class="row theme_classique">    
-                <h4>Historique des factures<h4>
-                        <!-- Afficher l'historique des factures + bouton
-                        cliquable pour éditer une certaine facture-->
+                <h4>Historique des factures<h4> <br>
+                <!-- Afficher l'historique des factures + bouton
+                        cliquable pour voir une certaine facture-->
+                    <div class="row">
+                        <table>
+                            <c:forEach items="${factures}" var="facture">
+                                <tr>
+                                    <td>${facture.getPeriode().debutToString()} --> ${facture.getPeriode().finToString()}</td>
+                                    <td><a href="controleurParent?action=voirFacture&loginParent=${parent.getLogin()}&factureDateDebut=${facture.getPeriode().debutToString()}&factureDateFin=${facture.getPeriode().finToString()}" target="_blank"><input type="button"value="Voir facture"</a></td>
+                                </tr>
+                            </c:forEach>                   
+                        </table>
+                    </div>
             </div>
         </div>
     </body>

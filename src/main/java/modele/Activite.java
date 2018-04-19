@@ -21,8 +21,9 @@ public class Activite extends Prestation{
     private int effectif;
     private String accompagnateur1;
     private String accompagnateur2;
+    private Periode periode;
 
-    public Activite(String nom, String creneauxJour, String creneauxHeure, List<String> classe, int prix, int effectif, String accompagnateur1, String accompagnateur2) {
+    public Activite(String nom, String creneauxJour, String creneauxHeure, List<String> classe, int prix, int effectif, String accompagnateur1, String accompagnateur2, Periode periode) {
         this.nom = nom;
         this.creneauxJour = creneauxJour;
         this.creneauxHeure = creneauxHeure;
@@ -31,6 +32,11 @@ public class Activite extends Prestation{
         this.effectif = effectif;
         this.accompagnateur1 = accompagnateur1;
         this.accompagnateur2 = accompagnateur2;
+        this.periode = periode;
+    }
+
+    public Periode getPeriode() {
+        return periode;
     }
     
     public boolean testClasse(String element) {
@@ -87,5 +93,10 @@ public class Activite extends Prestation{
     public String toString() {
         String result = nom + " le " + creneauxJour + " à " + creneauxHeure;
         return result;
+    }
+    
+    public int getPrixIndiv() {
+        int nbSemaines = periode.getNbSemaines();
+        return prix/nbSemaines;
     }
 }

@@ -5,6 +5,7 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page import="modele.Periode" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
@@ -55,7 +56,7 @@
                                     <td>${activite.getAccompagnateur1()}</td>
                                     <td>${activite.getAccompagnateur2()}</td>
                                     <!-- Si periode en cours impossible d'afficher la colonne suppression -->
-                                    <c:if test="${estEnCours == false}">
+                                    <c:if test="${activite.getPeriode().estEnCours() == false}">
                                         <td><a href="controleurMairie?action=activiteSupprimer&actiNom=${activite.getNom()}&actiJour=${activite.getCreneauxJour()}&actiHeure=${activite.getCreneauxHeure()}">supprimer</a></td>
                                     </c:if>
                                 </tr>
@@ -156,12 +157,14 @@
                                 Periode de l'activité :
                                 <select name="periode" required>
                                     <c:forEach items="${periodes}" var="periode">
-                                        <option value="${periode.debutToString()}-->${periode.finToString()}">${periode.debutToString()} --> ${periode.finToString()}</option>
+                                        <c:if test="${periode.estEnCours() == false}">
+                                            <option value="${periode.debutToString()}-->${periode.finToString()}">${periode.debutToString()} --> ${periode.finToString()}</option>
+                                        </c:if>
                                     </c:forEach>   
                                 </select>                                
                             </div>
                            
-                            <input type="submit" value="Ajouter"  <c:if test="${estEnCours == true}">disabled</c:if> />
+                            <input type="submit" value="Ajouter"/>
                             <!-- Pour indiquer au contrôleur quelle action faire, on utilise un champ caché -->
                             <input type="hidden" name="action" value="activiteAjouter" />
                         </form>
@@ -213,7 +216,6 @@
             </div>
         </div>
         <div id="container_periode" class="container">
-            <%@ page import="modele.Periode" %>
             <%! Periode periode = new Periode();%>
             <h2>Période - Jour : <%=periode.dateActuelleToString()%> </h2>
             <div class="row theme_classique page_activité">
@@ -253,7 +255,21 @@
                         Date fin (format AAAA-MM-JJ) : <input type="date" name="dateFin"/>
                         </div>
                         <input type="submit" value="Ajouter" />
-                        <!-- Pour indiquer au contrôleur quelle action faire, on utilise un champ caché -->
+                         <c:if test="${avantDateActuelle == true}">
+                            <div style="color:red;">
+                                Saisissez une période qui commence après la date d'aujourd'hui
+                            </div>
+                         </c:if>
+                         <c:if test="${chevauchePeriode == true}">
+                            <div style="color:red;">
+                                Saisissez une période qui ne chevauche pas une autre période
+                            </div>
+                         </c:if>
+                         <c:if test="${periodeIncorrecte == true}">
+                            <div style="color:red;">
+                                Saisissez une date de début avant la date de fin
+                            </div>
+                         </c:if>                        <!-- Pour indiquer au contrôleur quelle action faire, on utilise un champ caché -->
                         <input type="hidden" name="action" value="periodeAjouter" />
                       </form>
                 </div>
