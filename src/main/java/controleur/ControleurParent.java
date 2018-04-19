@@ -109,31 +109,13 @@ public class ControleurParent extends HttpServlet {
     
     public void testMiseAJourBDD() {
         PeriodeDAO periodeDAO = new PeriodeDAO(ds);
+        ActiviteDAO activiteDAO = new ActiviteDAO(ds);
+        AbsenceDAO absenceDAO = new AbsenceDAO(ds);
         List<Periode> periodes = periodeDAO.getPeriodes();
         for (Periode periode : periodes) {
             if (periode.estFini()) {
                 // On calcule toutes les factures
-                ParentDAO parentDAO = new ParentDAO(ds);
-                FactureDAO factureDAO = new FactureDAO(ds);
-                ActiviteDAO activiteDAO = new ActiviteDAO(ds);
-                AbsenceDAO absenceDAO = new AbsenceDAO(ds);
-                List<String> listeParent = parentDAO.getParents();
-                for (String loginParent : listeParent) {
-                    FicheParent ficheParent = parentDAO.getFicheParent(loginParent);
-                    int prixTotal = 0;
-                    int montantEnlever = 0;
-                    for (FicheEnfant ficheEnfant : ficheParent.getEnfants()) {
-                        List<Activite> activites = activiteDAO.getReserver(ficheEnfant, loginParent, periode);
-                        for (Activite activite : activites) {
-                            prixTotal += activite.getPrix();
-                            montantEnlever += activite.getPrixIndiv() * absenceDAO.getAbsences(activite.getNom(),
-                                    activite.getCreneauxJour(), activite.getCreneauxHeure(),
-                                    loginParent, ficheEnfant.getPrenom());
-                        }
-                    }
-                    int montantFinal = prixTotal - montantEnlever;
-                    factureDAO.ajoutFacture(loginParent, periode.debutToString(), periode.finToString(), prixTotal, montantEnlever, montantFinal);
-                }
+                calculeFacture(periode);
                 
                 // On supprime toutes les activites de cette periode
                 // On supprime toutes les reservations de cette periode
@@ -144,9 +126,39 @@ public class ControleurParent extends HttpServlet {
                 
                 // On supprime toutes les absences
                 absenceDAO.finPeriode();
+            } else if (periode.estEnCours()) {
+                List<Activite> activites = activiteDAO.getListeActivite(periode);
+                for (Activite activite : activites) {
+                    int effectifMax = activite.getEffectif();
+                    activiteDAO.miseAJour(effectifMax, activite.getNom(),activite.getCreneauxJour(), activite.getCreneauxHeure());
+                }
             }
+            
         }
-
+    }
+    
+    public void calculeFacture(Periode periode) {
+        ParentDAO parentDAO = new ParentDAO(ds);
+        FactureDAO factureDAO = new FactureDAO(ds);
+        ActiviteDAO activiteDAO = new ActiviteDAO(ds);
+        AbsenceDAO absenceDAO = new AbsenceDAO(ds);
+        List<String> listeParent = parentDAO.getParents();
+        for (String loginParent : listeParent) {
+            FicheParent ficheParent = parentDAO.getFicheParent(loginParent);
+            int prixTotal = 0;
+            int montantEnlever = 0;
+            for (FicheEnfant ficheEnfant : ficheParent.getEnfants()) {
+                List<Activite> activites = activiteDAO.getReserver(ficheEnfant, loginParent, periode);
+                for (Activite activite : activites) {
+                    prixTotal += activite.getPrix();
+                    montantEnlever += activite.getPrixIndiv() * absenceDAO.getAbsences(activite.getNom(),
+                            activite.getCreneauxJour(), activite.getCreneauxHeure(),
+                            loginParent, ficheEnfant.getPrenom());
+                }
+            }
+            int montantFinal = prixTotal - montantEnlever;
+            factureDAO.ajoutFacture(loginParent, periode.debutToString(), periode.finToString(), prixTotal, montantEnlever, montantFinal);
+        }        
     }
     
     

@@ -57,13 +57,42 @@ public class ActiviteDAO extends AbstractDataBaseDAO {
 	return result;
     }
     
+    public List<Activite> getListeActivite(Periode periode) {
+        List<Activite> result = new ArrayList<>();
+        try (
+	     Connection conn = getConn();
+	     Statement st = conn.createStatement();
+	     ) {
+            ResultSet rs = st.executeQuery("SELECT * FROM Activites WHERE dateDebut='" +periode.debutToString()+ "' AND dateFin='" + periode.finToString() + "'");
+            while (rs.next()) {
+                String nom = rs.getString("nom");
+                String classe = rs.getString("classe");
+                List<String> listeClasse = new ArrayList<>();
+                if (classe.contains("/")) {
+                    String[] classeDiviser = classe.split("/");
+                    listeClasse = Arrays.asList(classeDiviser);
+                }
+                else {
+                    listeClasse.add(classe);
+                }
+                String creneauxJour = rs.getString("creneauxJour");
+                String creneauxHeure = rs.getString("creneauxHeure");
+                result.add(new Activite(nom, creneauxJour, creneauxHeure, listeClasse, rs.getInt("prix"), 
+                        rs.getInt("effectif"), rs.getString("mailaccompagnateur1"), rs.getString("mailaccompagnateur2"), periode));
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD " + e.getMessage(), e);
+	}
+	return result;
+    }
+    
     /**
      * Renvoie la liste des activites de la table activite dont l'enfant a le droit de selectionner.
      */
     public List<Activite> getListeActivite(FicheEnfant ficheEnfant, String loginParent) {
         List<Activite> listActivite = this.getListeActivite();
         List<Activite> reserved = this.getReserver(ficheEnfant, loginParent);
-        List<Activite> result = new ArrayList<Activite>();
+        List<Activite> result = new ArrayList<>();
         // On enleve toutes les activites qui ont déjà été reservé par l'enfant
         listActivite.removeAll(reserved);
         for (Activite activite : listActivite) {
@@ -92,6 +121,28 @@ public class ActiviteDAO extends AbstractDataBaseDAO {
             throw new DAOException("Erreur BD " + e.getMessage(), e);
 	}
 	return result;
+    }
+    
+    public void miseAJour(int effectif, String nomActivite, String creneauxJour, String creneauxHeure) {
+        try (
+	     Connection conn = getConn();
+	     Statement st = conn.createStatement();
+            ) {
+            int resultat = 0;
+            ResultSet rs = st.executeQuery("SELECT COUNT(nomActivite) AS total FROM "
+                    + "activiteReserve WHERE nomActivite='"+nomActivite+"' and"
+                    + " creneauxJour='"+creneauxJour+"' and creneauxHeure='"+creneauxHeure+"'");
+            if (rs.next()) {
+                resultat = rs.getInt("total");
+            }
+            if (resultat >= effectif) {
+                st.executeQuery("DELETE TOP(" + (resultat-effectif) + ") FROM"
+                        + " activiteReserve WHERE nomActivite='"+nomActivite+"'"
+                        + " and creneauxJour='"+creneauxJour+"' and creneauxHeure='"+creneauxHeure+"'");
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD " + e.getMessage(), e);
+        }
     }
     
     /**
