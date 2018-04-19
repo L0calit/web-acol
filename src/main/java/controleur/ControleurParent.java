@@ -6,6 +6,7 @@ import dao.ParentDAO;
 import dao.PeriodeDAO;
 import dao.RegimeDAO;
 import java.io.IOException;
+import java.util.GregorianCalendar;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
@@ -343,11 +344,15 @@ public class ControleurParent extends HttpServlet {
             String loginParent = request.getParameter("loginParent");
             ParentDAO parentDAO = new ParentDAO(ds);
             ActiviteDAO activiteDAO = new ActiviteDAO(ds);
+            PeriodeDAO periodeDAO = new PeriodeDAO(ds);
+            List<Periode> periodes = periodeDAO.getPeriodes();
             FicheParent ficheParent = parentDAO.getFicheParent(loginParent);
             String nomActivite = activite.split("le")[0];
             String creneauxJour = activite.split("le")[1].split("à")[0];
             String creneauxHeure = activite.split("le")[1].split("à")[1];
-            activiteDAO.reserverActivite(prenomEnfant, loginParent, nomActivite, creneauxJour, creneauxHeure);
+            Periode periodeSuivante = getPeriodeSuivante(periodes);
+            activiteDAO.reserverActivite(prenomEnfant, loginParent, nomActivite, 
+                    creneauxJour, creneauxHeure, periodeSuivante.debutToString(), periodeSuivante.finToString());
             for (FicheEnfant enfant : ficheParent.getEnfants()) {
                 if (enfant.getPrenom().trim().equals(prenomEnfant.trim())) {
                     request.setAttribute("ficheEnfant", enfant);
@@ -356,8 +361,6 @@ public class ControleurParent extends HttpServlet {
                 }
             }
             request.setAttribute("loginParent", loginParent);
-            PeriodeDAO periodeDAO = new PeriodeDAO(ds);
-            List<Periode> periodes = periodeDAO.getPeriodes();
             request.setAttribute("estEnCours", periodeEncours(periodes));
             request.getRequestDispatcher("WEB-INF/enfant.jsp").forward(request, response);
         } else if (action.equals("activiteSupprimer")) {
@@ -384,5 +387,16 @@ public class ControleurParent extends HttpServlet {
             request.setAttribute("estEnCours", periodeEncours(periodes));
             request.getRequestDispatcher("WEB-INF/enfant.jsp").forward(request, response);
         }
+    }
+    
+    public Periode getPeriodeSuivante(List<Periode> periodes) {
+        Periode periodeSuivante = periodes.get(0);
+        GregorianCalendar dateActuelle = new Periode().getDateActuelle();
+        for (Periode periode : periodes) {
+            if (periode.getDateDebut().after(dateActuelle) && periode.getDateDebut().before(periodeSuivante.getDateDebut())) {
+                periodeSuivante = periode;
+            }
+        }
+        return periodeSuivante;
     }
 }

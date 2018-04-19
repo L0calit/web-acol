@@ -127,11 +127,12 @@ public class ControleurMairie extends HttpServlet {
             request.setAttribute("SameActivity", "1");
         } else  {
             String classes = parseClass(request);
+            String periode = request.getParameter("periode");
             activiteDAO.ajouterActivite(request.getParameter("nom"), 
                     request.getParameter("jour"), request.getParameter("horaire"),
                     classes, Integer.parseInt(request.getParameter("prix")),
                     Integer.parseInt(request.getParameter("effectif")), request.getParameter("mail1"),
-                    request.getParameter("mail2"));
+                    request.getParameter("mail2"), periode.split("-->")[0], periode.split("-->")[1]);
         }        
     }
     

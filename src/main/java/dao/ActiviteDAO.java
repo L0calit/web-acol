@@ -113,11 +113,11 @@ public class ActiviteDAO extends AbstractDataBaseDAO {
     /**
      * Ajoute l'activité dans la table activité
      */
-    public void ajouterActivite(String nom, String creneauxJour, String creneauxHeure, String classe, int prix, int effectif, String mail1, String mail2) {
+    public void ajouterActivite(String nom, String creneauxJour, String creneauxHeure, String classe, int prix, int effectif, String mail1, String mail2, String dateDebut, String dateFin) {
         try (
 	     Connection conn = getConn();
 	     PreparedStatement st = conn.prepareStatement
-	       ("INSERT INTO activites (nom, creneauxJour, creneauxHeure, classe, prix, effectif, mailAccompagnateur1, mailAccompagnateur2) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+	       ("INSERT INTO activites (nom, creneauxJour, creneauxHeure, classe, prix, effectif, mailAccompagnateur1, mailAccompagnateur2, dateDebut, dateFin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	     ) {
             st.setString(1, nom);
             st.setString(2, creneauxJour);
@@ -127,6 +127,8 @@ public class ActiviteDAO extends AbstractDataBaseDAO {
             st.setInt(6, effectif);
             st.setString(7, mail1);
             st.setString(8, mail2);
+            st.setString(9, dateDebut);
+            st.setString(10, dateFin);
             st.executeUpdate();
         } catch (SQLException e) {
             throw new DAOException("Erreur BD " + e.getMessage(), e);
@@ -163,7 +165,7 @@ public class ActiviteDAO extends AbstractDataBaseDAO {
     /**
      * Reserver l'activité dans la table activité
      */
-    public void reserverActivite(String prenomEnfant, String loginParent, String nomActivite, String creneauxJour, String creneauxHeure) {
+    public void reserverActivite(String prenomEnfant, String loginParent, String nomActivite, String creneauxJour, String creneauxHeure, String dateDebut, String dateFin) {
         try (
 	     Connection conn = getConn();
 	     PreparedStatement st = conn.prepareStatement
@@ -174,8 +176,8 @@ public class ActiviteDAO extends AbstractDataBaseDAO {
             st.setString(3, nomActivite.trim());
             st.setString(4, creneauxJour.trim());
             st.setString(5, creneauxHeure.trim());
-            st.setString(6, "todo");
-            st.setString(7, "todo");
+            st.setString(6, dateDebut.trim());
+            st.setString(7, dateFin.trim());
             st.executeUpdate();
         } catch (SQLException e) {
             throw new DAOException("Erreur BD " + e.getMessage(), e);
