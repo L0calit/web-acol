@@ -54,8 +54,8 @@
                                     <td>${activite.getEffectif()}</td>
                                     <td>${activite.getAccompagnateur1()}</td>
                                     <td>${activite.getAccompagnateur2()}</td>
-                                    <!-- Si periode en cours impossible d'afficher la colonnes suppression -->
-                                    <c:if test="${estEncours == false}">
+                                    <!-- Si periode en cours impossible d'afficher la colonne suppression -->
+                                    <c:if test="${estEnCours == false}">
                                         <td><a href="controleurMairie?action=activiteSupprimer&actiNom=${activite.getNom()}&actiJour=${activite.getCreneauxJour()}&actiHeure=${activite.getCreneauxHeure()}">supprimer</a></td>
                                     </c:if>
                                 </tr>
