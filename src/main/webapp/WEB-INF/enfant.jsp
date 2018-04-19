@@ -96,6 +96,70 @@
                             <input type="hidden" name="loginParent" value="${loginParent}" />
                         </form>
                     </div>
+                        <div class="row">
+                            <table class="table table-bordered table-hover">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th scope="col">Garderie réservé pour la période en cours</th>
+                                        <th scope="col">Annulation de la garderie</th>
+                                    </tr>
+                                </thead>
+                                <c:forEach items="${garderies}" var="garderie">
+                                    <c:if test="true">
+                                        <tr>
+                                            <td>${garderie.getCreneauxJour()} à ${garderie.getCreneauxHeure()}</td>
+                                            <td><a href="controleurParent?action=garderieSupprimer&prenomEnfant=${ficheEnfant.getPrenom().trim()}&loginParent=${loginParent.trim()}&creneauxJour=${garderie.getCreneauxJour()}&creneauxHeure=${garderie.getCreneauxHeure()}"><input type="button"value="supprimer"></a></td>
+                                        </tr>                                    
+                                    </c:if>
+                                </c:forEach>         
+                            </table>
+                        </div>
+                    <div class="row">
+                        <form method="get" action="controleurParent">
+                            <table border="1" class="table table-bordered">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Lundi</th>
+                                        <th>Mardi</th>
+                                        <th>Jeudi</th>
+                                        <th>Vendredi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>7h <input type="checkbox" name="Lu7" value="Lundi à 7h"></td>
+                                        <td>7h <input type="checkbox" name="Ma7" value="Mardi à 7h"></td>
+                                        <td>7h <input type="checkbox" name="Je7" value="Jeudi à 7h"></td>
+                                        <td>7h <input type="checkbox" name="Ve7" value="Vendredi à 7h"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>15h <input type="checkbox" name="Lu5" value="Lundi à 15h45"></td>
+                                        <td>15h <input type="checkbox" name="Ma5" value="Mardi à 15h45"></td>
+                                        <td>15h <input type="checkbox" name="Je5" value="Jeudi à 15h45"></td>
+                                        <td>15h <input type="checkbox" name="Ve5" value="Vendredi à 15h45"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>16h <input type="checkbox" name="Lu6" value="Lundi à 16h30"></td>
+                                        <td>16h <input type="checkbox" name="Ma6" value="Mardi à 16h30"></td>
+                                        <td>16h <input type="checkbox" name="Je6" value="Jeudi à 16h30"></td>
+                                        <td>16h <input type="checkbox" name="Ve6" value="Vendredi à 16h30"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>17h <input type="checkbox" name="Lu17" value="Lundi à 17h15"></td>
+                                        <td>17h <input type="checkbox" name="Ma17" value="Mardi à 17h15"></td>
+                                        <td>17h <input type="checkbox" name="Je17" value="Jeudi à 17h15"></td>
+                                        <td>17h <input type="checkbox" name="Ve17" value="Vendredi à 17h15"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="form-group">
+                                <input type="submit" value="Ajouter garderie" />
+                            </div>
+                            <input type="hidden" name="action" value="ajoutGarderie" />
+                            <input type="hidden" name="prenomEnfant" value="${ficheEnfant.getPrenom()}" />
+                            <input type="hidden" name="loginParent" value="${loginParent}" />
+                        </form>
+                    </div>
                </div>
            </div>
         </div>

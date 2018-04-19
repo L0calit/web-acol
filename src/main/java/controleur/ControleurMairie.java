@@ -24,6 +24,7 @@ import javax.sql.DataSource;
 import modele.Activite;
 import modele.FicheEnfant;
 import modele.FicheParent;
+import modele.Garderie;
 import modele.Periode;
 
 /**
@@ -109,31 +110,13 @@ public class ControleurMairie extends HttpServlet {
     
     public void testMiseAJourBDD() {
         PeriodeDAO periodeDAO = new PeriodeDAO(ds);
+        ActiviteDAO activiteDAO = new ActiviteDAO(ds);
+        AbsenceDAO absenceDAO = new AbsenceDAO(ds);
         List<Periode> periodes = periodeDAO.getPeriodes();
         for (Periode periode : periodes) {
             if (periode.estFini()) {
                 // On calcule toutes les factures
-                ParentDAO parentDAO = new ParentDAO(ds);
-                FactureDAO factureDAO = new FactureDAO(ds);
-                ActiviteDAO activiteDAO = new ActiviteDAO(ds);
-                AbsenceDAO absenceDAO = new AbsenceDAO(ds);
-                List<String> listeParent = parentDAO.getParents();
-                for (String loginParent : listeParent) {
-                    FicheParent ficheParent = parentDAO.getFicheParent(loginParent);
-                    int prixTotal = 0;
-                    int montantEnlever = 0;
-                    for (FicheEnfant ficheEnfant : ficheParent.getEnfants()) {
-                        List<Activite> activites = activiteDAO.getReserver(ficheEnfant, loginParent, periode);
-                        for (Activite activite : activites) {
-                            prixTotal += activite.getPrix();
-                            montantEnlever += activite.getPrixIndiv() * absenceDAO.getAbsences(activite.getNom(),
-                                    activite.getCreneauxJour(), activite.getCreneauxHeure(),
-                                    loginParent, ficheEnfant.getPrenom());
-                        }
-                    }
-                    int montantFinal = prixTotal - montantEnlever;
-                    factureDAO.ajoutFacture(loginParent, periode.debutToString(), periode.finToString(), prixTotal, montantEnlever, montantFinal);
-                }
+                calculeFacture(periode);
                 
                 // On supprime toutes les activites de cette periode
                 // On supprime toutes les reservations de cette periode
@@ -141,11 +124,47 @@ public class ControleurMairie extends HttpServlet {
 
                 // On supprime la periode
                 periodeDAO.supprimerPeriode(periode.debutToString(), periode.finToString());
+                
+                // On supprime toutes les absences
+                absenceDAO.finPeriode();
+            } else if (periode.estEnCours()) {
+                List<Activite> activites = activiteDAO.getListeActivite(periode);
+                for (Activite activite : activites) {
+                    int effectifMax = activite.getEffectif();
+                    activiteDAO.miseAJour(effectifMax, activite.getNom(),activite.getCreneauxJour(), activite.getCreneauxHeure());
+                }
             }
+            
         }
-        // On supprime toutes les absences
+    }
+    
+    public void calculeFacture(Periode periode) {
+        ParentDAO parentDAO = new ParentDAO(ds);
+        FactureDAO factureDAO = new FactureDAO(ds);
+        ActiviteDAO activiteDAO = new ActiviteDAO(ds);
         AbsenceDAO absenceDAO = new AbsenceDAO(ds);
-        absenceDAO.finPeriode();
+        List<String> listeParent = parentDAO.getParents();
+        for (String loginParent : listeParent) {
+            FicheParent ficheParent = parentDAO.getFicheParent(loginParent);
+            int prixTotal = 0;
+            int montantEnlever = 0;
+            for (FicheEnfant ficheEnfant : ficheParent.getEnfants()) {
+                List<Activite> activites = activiteDAO.getReserver(ficheEnfant, loginParent, periode);
+                for (Activite activite : activites) {
+                    prixTotal += activite.getPrix();
+                    montantEnlever += activite.getPrixIndiv() * absenceDAO.getAbsences(activite.getNom(),
+                            activite.getCreneauxJour(), activite.getCreneauxHeure(),
+                            loginParent, ficheEnfant.getPrenom());
+                }
+                List<Garderie> garderies = activiteDAO.getGarderie(ficheEnfant.getPrenom(), loginParent, periode);
+                for (Garderie garderie : garderies) {
+                    prixTotal += garderie.getPrix();
+                }
+                prixTotal += ficheEnfant.getCantine().getPrix();
+            }
+            int montantFinal = prixTotal - montantEnlever;
+            factureDAO.ajoutFacture(loginParent, periode.debutToString(), periode.finToString(), prixTotal, montantEnlever, montantFinal);
+        }        
     }
     
     /**

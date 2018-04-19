@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import javax.sql.DataSource;
 import modele.FicheEnfant;
+import modele.Garderie;
 import modele.Periode;
 
 /**
@@ -84,6 +85,47 @@ public class ActiviteDAO extends AbstractDataBaseDAO {
             throw new DAOException("Erreur BD " + e.getMessage(), e);
 	}
 	return result;
+    }
+    
+    public List<Garderie> getGarderie(String prenomEnfant, String loginParent) {
+        List<Garderie> result = new ArrayList<>();
+        try (
+	     Connection conn = getConn();
+	     Statement st = conn.createStatement();
+	     ) {
+            ResultSet rs = st.executeQuery("SELECT * FROM ActiviteReserve WHERE prenomEnfant='" +prenomEnfant+ "' AND loginParent='" + loginParent + "' AND nomActivite='Garderie'");
+            while (rs.next()) {
+                String creneauxJour = rs.getString("creneauxJour");
+                String creneauxHeure = rs.getString("creneauxHeure");
+                String dateDebut = rs.getString("dateDebut");
+                String dateFin = rs.getString("dateFin");
+                result.add(new Garderie(creneauxJour, creneauxHeure, dateDebut, dateFin));
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD " + e.getMessage(), e);
+	}
+        return result;
+    }
+    
+     public List<Garderie> getGarderie(String prenomEnfant, String loginParent, Periode periode) {
+        List<Garderie> result = new ArrayList<>();
+        try (
+	     Connection conn = getConn();
+	     Statement st = conn.createStatement();
+	     ) {
+            ResultSet rs = st.executeQuery("SELECT * FROM ActiviteReserve WHERE prenomEnfant='" +prenomEnfant+ "' AND loginParent='" + loginParent + "' AND nomActivite='Garderie'"
+                    + " AND dateDebut='" +periode.debutToString()+ "' AND dateFin='" +periode.finToString()+ "'");
+            while (rs.next()) {
+                String creneauxJour = rs.getString("creneauxJour");
+                String creneauxHeure = rs.getString("creneauxHeure");
+                String dateDebut = rs.getString("dateDebut");
+                String dateFin = rs.getString("dateFin");
+                result.add(new Garderie(creneauxJour, creneauxHeure, dateDebut, dateFin));
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD " + e.getMessage(), e);
+	}
+        return result;
     }
     
     /**

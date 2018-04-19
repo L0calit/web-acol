@@ -15,6 +15,7 @@ public class Cantine {
     private boolean mercredi = false;
     private boolean jeudi = false;
     private boolean vendredi = false;
+    private int prix = 3;
 
     public Cantine(String nom) {
         String[] jourDiviser = nom.split("/");
@@ -56,5 +57,24 @@ public class Cantine {
         }
        return result;
     }
-    
+
+    public int getPrix() {
+        int jour = 0;
+        if (lundi) {
+            jour ++;
+        }
+        if (mardi) {
+            jour ++;
+        }
+        if (mercredi) {
+            jour ++;
+        }
+        if (jeudi) {
+            jour ++;
+        }
+        if (vendredi) {
+            jour ++;
+        }
+        return prix * jour;
+    }
 }
