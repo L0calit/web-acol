@@ -1,15 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package modele;
 
 /**
  *
  * @author bernnico
  */
-public class Garderie extends Prestation{
+public class Garderie extends Prestation {
+
     private String creneauxJour;
     private String creneauxHeure;
     private String dateDebut;
@@ -26,7 +22,7 @@ public class Garderie extends Prestation{
     public int getPrix() {
         return prix;
     }
-    
+
     public Periode getPeriode() {
         return new Periode(dateDebut, dateFin);
     }

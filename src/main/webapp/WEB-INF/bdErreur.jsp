@@ -12,20 +12,20 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
     </head>
     <body>
-         <div id="container_erreur" class="container">
-           <div id="erreur" class="row theme_classique">
-               <div class="col">
-                   <div class="row">
+        <div id="container_erreur" class="container">
+            <div id="erreur" class="row theme_classique">
+                <div class="col">
+                    <div class="row">
                         <h1 style="text-align: center">Erreur</h1>
-                   </div>
-                   <div class="row">
+                    </div>
+                    <div class="row">
                         <p>Une erreur d’accès à la base de données vient de se produire.</p>
-                   </div>
-                   <div class="row">
-                    <p>Message : ${erreurMessage}</pre>
-                   </div>
-               </div>
-           </div>
-         </div>
+                    </div>
+                    <div class="row">
+                        <p>Message : ${erreurMessage}</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
     </body>
-    </html>
+</html>

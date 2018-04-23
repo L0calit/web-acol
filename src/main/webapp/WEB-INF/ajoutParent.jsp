@@ -17,35 +17,35 @@
     <body>
         <h1>Création de Fiche Parent</h1>
         <div id="container_modif_parent" class="container">
-           <div id="parent" class="row theme_classique">
+            <div id="parent" class="row theme_classique">
                 <div class="col">
-                   <div class="row">
-                       <h4>Informations modifiables</h4>
-                   </div>
                     <div class="row">
-                  <form method="post" action="controleurParent" accept-charset="UTF-8">
-                    <div class="form-group">
-                        Entrez un Nouveau Prénom : <input type="text" name="prenom" required/>
+                        <h4>Informations modifiables</h4>
                     </div>
-                    <div class="form-group">
-                      Entrez un Nouveau Nom :<input type="text" name="nom" required/>
+                    <div class="row">
+                        <form method="post" action="controleurParent" accept-charset="UTF-8">
+                            <div class="form-group">
+                                Entrez un Nouveau Prénom : <input type="text" name="prenom" required/>
+                            </div>
+                            <div class="form-group">
+                                Entrez un Nouveau Nom :<input type="text" name="nom" required/>
+                            </div>
+                            <div class="form-group">
+                                Entrez une Nouvelle Adresse : <input type="text" name="adresse" required/>
+                            </div>
+                            <input type="hidden" name="login" value="${login}"/></li>
+                            <input type="hidden" name="motdepasse" value="${password}"/>
+                            <input type="submit" value="Valider les informations"/>
+                            <!-- Pour indiquer au contrôleur quelle action faire, on utilise un champ caché -->
+                            <input type="hidden" name="action" value="creationFiche" />
+                        </form>
                     </div>
-                    <div class="form-group">
-                        Entrez une Nouvelle Adresse : <input type="text" name="adresse" required/>
-                    </div>
-                    <input type="hidden" name="login" value="${login}"/></li>
-                    <input type="hidden" name="motdepasse" value="${password}"/>
-                    <input type="submit" value="Valider les informations"/>
-                    <!-- Pour indiquer au contrôleur quelle action faire, on utilise un champ caché -->
-                    <input type="hidden" name="action" value="creationFiche" />
-                  </form>
-                    </div>
-           </div>
-        </div>
-    <div id="container_retour" class="container">
-        <form>
-            <input type="button" value="Retour" onclick="history.go(-1)">
-        </form>
-    </div>
+                </div>
+            </div>
+            <div id="container_retour" class="container">
+                <form>
+                    <input type="button" value="Retour" onclick="history.go(-1)">
+                </form>
+            </div>
     </body>
 </html>

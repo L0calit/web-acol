@@ -17,9 +17,9 @@
     </head>
     <body>
         <h1>Ajouter les informations de l'enfant</h1>
-      <div id="container_modif_parent" class="container">
-           <div id="parent" class="row theme_classique">
-                  <form method="get" action="controleurParent" accept-charset="UTF-8">
+        <div id="container_modif_parent" class="container">
+            <div id="parent" class="row theme_classique">
+                <form method="get" action="controleurParent" accept-charset="UTF-8">
                     <div class="form-group">
                         Entrez un Nom: <input type="text" name="nom" required/>
                     </div>
@@ -39,7 +39,7 @@
                     </div>
                     <div class="form-group">
                         Entrez la classe de l'enfant:                       
-                          <select name="classe">
+                        <select name="classe">
                             <option value="PS" selected>Petite Section</option> 
                             <option value="MS">Moyenne Section</option> 
                             <option value="GS">Grande Section</option> 
@@ -48,51 +48,51 @@
                             <option value="CE2">CE2</option> 
                             <option value="CM1">CM1</option> 
                             <option value="CM2">CM2</option> 
-                          </select>
-                      </div>
-                      <div class="form-group">
-                      Entrez le regime de l'enfant
-                          <select name="regimeChoisi" required>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        Entrez le regime de l'enfant
+                        <select name="regimeChoisi" required>
                             <c:forEach items="${regimes}" var="regime">
                                 <option value="${regime}">${regime}</option>
                             </c:forEach>   
-                          </select>
-                      </div>
-                      <div class="form-group">
-                      Mangera à la cantine :
-                          <table border="1" class="table table-bordered">
-                              <thead class="thead-light">
-                                  <tr>
-                                      <th>Lundi</th>
-                                      <th>Mardi</th>
-                                      <th>Mercredi</th>
-                                      <th>Jeudi</th>
-                                      <th>Vendredi</th>
-                                  </tr>
-                              </thead>
-                              <tbody>
-                                  <tr>
-                                      <td><input type="checkbox" name="Lu" value="Lu"></td>
-                                      <td><input type="checkbox" name="Ma" value="Ma"></td>
-                                      <td><input type="checkbox" name="Me" value="Me"></td>
-                                      <td><input type="checkbox" name="Je" value="Je"></td>
-                                      <td><input type="checkbox" name="Ve" value="Ve"></td>
-                                  </tr>
-                              </tbody>
-                          </table>
-                      </div>
-                      <div class="form-group">Informations supplémentaires : <br/>
-                          <textarea type="text" rows="5" cols="50" name="divers" required> Rien à signaler</textarea>
-                          </div>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        Mangera à la cantine :
+                        <table border="1" class="table table-bordered">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Lundi</th>
+                                    <th>Mardi</th>
+                                    <th>Mercredi</th>
+                                    <th>Jeudi</th>
+                                    <th>Vendredi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><input type="checkbox" name="Lu" value="Lu"></td>
+                                    <td><input type="checkbox" name="Ma" value="Ma"></td>
+                                    <td><input type="checkbox" name="Me" value="Me"></td>
+                                    <td><input type="checkbox" name="Je" value="Je"></td>
+                                    <td><input type="checkbox" name="Ve" value="Ve"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="form-group">Informations supplémentaires : <br/>
+                        <textarea type="text" rows="5" cols="50" name="divers" required> Rien à signaler</textarea>
+                    </div>
                     <input type="submit" value="Ajouter enfant" />
                     <input type="hidden" name="action" value="enfantAjouter" />
                     <input type="hidden" name="loginParent" value="${loginParent}" />
-           </div>
-      </div>
-    <div id="container_retour" class="container">
-        <form>
-            <input type="button" value="Retour" onclick="history.go(-1)">
-        </form>
-    </div>
+            </div>
+        </div>
+        <div id="container_retour" class="container">
+            <form>
+                <input type="button" value="Retour" onclick="history.go(-1)">
+            </form>
+        </div>
     </body>
 </html>

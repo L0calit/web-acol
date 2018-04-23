@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package modele;
 
 /**
@@ -10,6 +5,7 @@ package modele;
  * @author LucBR
  */
 public class Facture {
+
     private int prixTotal;
     private int montantEnleve;
     private int montantFinal;
@@ -37,5 +33,5 @@ public class Facture {
     public int getPrixTotal() {
         return prixTotal;
     }
-    
+
 }

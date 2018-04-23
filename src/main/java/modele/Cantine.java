@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package modele;
 
 /**
@@ -10,6 +5,7 @@ package modele;
  * @author bernnico
  */
 public class Cantine {
+
     private boolean lundi = false;
     private boolean mardi = false;
     private boolean mercredi = false;
@@ -55,25 +51,30 @@ public class Cantine {
         if (result.equals("")) {
             return "0";
         }
-       return result;
+        return result;
     }
 
+    /**
+     * Permet de recupérer le prix de la cantine au total
+     *
+     * @return prix
+     */
     public int getPrix() {
         int jour = 0;
         if (lundi) {
-            jour ++;
+            jour++;
         }
         if (mardi) {
-            jour ++;
+            jour++;
         }
         if (mercredi) {
-            jour ++;
+            jour++;
         }
         if (jeudi) {
-            jour ++;
+            jour++;
         }
         if (vendredi) {
-            jour ++;
+            jour++;
         }
         return prix * jour;
     }
