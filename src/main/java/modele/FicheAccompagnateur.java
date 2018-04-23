@@ -15,4 +15,13 @@ public class FicheAccompagnateur extends Fiche {
         this.numeroTel = numeroTel;
     }
 
+    public String getNumeroTel() {
+        return numeroTel;
+    }
+
+    public String getMail() {
+        return mail;
+    }
+
+    
 }

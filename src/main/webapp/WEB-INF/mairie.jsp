@@ -304,5 +304,61 @@
             </form>
         </div>
     </div>
+      <div id="container_accompagnateurs" class="container">
+        <h2>Accompagnateurs : </h2>
+        <div class="row theme_classique page_activité">
+            <div class="col">
+                <table border="1" class="table table-bordered table-hover">
+                    <thead class="thead-light">
+                        <tr>
+                            <th scope="col">Nom</th>
+                            <th scope="col">Prenom</th>
+                            <th scope="col">Mail</th>
+                            <th scope="col">Numéro de téléphone</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <c:forEach items="${accoms}" var="accom">
+                            <tr>
+                                <td>${accom.getNom()}</td>
+                                <td>${accom.getPrenom()}</td>
+                                <td>${accom.getMail()}</td>
+                                <td>${accom.getNumeroTel()}</td>
+                                <c:if test="${estEnCours == false}">
+                                    <td><a href="controleurMairie?action=accompagnateurSupprimer&mail=${accom.getMail()}">supprimer</a></td>
+                                </c:if>
+                            </tr>
+                        </c:forEach> 
+                    </tbody>
+                </table>
+
+            </div>
+            <div class="col">
+                <h3>Ajouter un accompagnateur</h3>
+                <form method="get" action="controleurMairie" accept-charset="UTF-8">
+                    <div class="form-group">
+                        Nom : <input type="text" name="nom"/>
+                    </div>
+                    <div class="form-group">
+                        Prenom : <input type="text" name="prenom"/>
+                    </div>
+                    <div class="form-group">
+                        Adresse-mail : <input type="mail" name="mail"/>
+                    </div>
+                    <div class="form-group">
+                        Numéro de téléphone : <input type="tel" name="numeroTel"/>
+                    </div>
+                    <input type="submit" value="Ajouter" />
+                    <c:if test="${mailUtiliser == true}">
+                        <div style="color:red;">
+                            Cette adresse mail est déjà utilisée
+                        </div>
+                    </c:if>                      
+                    <!-- Pour indiquer au contrôleur quelle action faire, on utilise un champ caché -->
+                    <input type="hidden" name="action" value="accompagnateurAjouter" />
+                </form>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
