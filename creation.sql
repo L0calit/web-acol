@@ -58,7 +58,7 @@ INSERT INTO BOUSSANL.EMPLOYE (LOGIN, MDP)
 
 CREATE TABLE ENFANT (SEXE CHAR(1), NOM CHAR(20) NOT NULL, PRENOM CHAR(20) NOT NULL, LOGINPARENT CHAR(20) NOT NULL, CLASSE CHAR(5), DATEDENAISSANCE CHAR(20), CANTINE CHAR(100), REGIME CHAR(50), DIVERS VARCHAR2(200), PRIMARY KEY (NOM, PRENOM, LOGINPARENT));
 INSERT INTO BOUSSANL.ENFANT (SEXE, NOM, PRENOM, LOGINPARENT, CLASSE, DATEDENAISSANCE, CANTINE, REGIME, DIVERS)
-	VALUES ('A', 'Couderc             ', 'Josiane             ', 'coude               ', 'CP   ', '30/06/1996          ', 'me/                                                                                                 ', 'que du domac                                      ', ' Rien à signaler');
+	VALUES ('A', 'Couderc             ', 'Josiane             ', 'coude               ', 'CP   ', '30/06/1996          ', 'me/                                                                                                 ', 'que du macdo                                      ', ' Rien à signaler');
 INSERT INTO BOUSSANL.ENFANT (SEXE, NOM, PRENOM, LOGINPARENT, CLASSE, DATEDENAISSANCE, CANTINE, REGIME, DIVERS)
 	VALUES ('A', 'Couderc             ', 'Louis               ', 'coude               ', 'CE2  ', '30/06/1885          ', 'lu/ma/me/je/ve/                                                                                     ', 'healthy                                           ', 'Travailleur');
 
@@ -76,11 +76,11 @@ CREATE TABLE PARENT (NOM CHAR(20), PRENOM CHAR(20), ADRESSE CHAR(250), LOGIN CHA
 INSERT INTO BOUSSANL.PARENT (NOM, PRENOM, ADRESSE, LOGIN, MDP)
 	VALUES ('Couderc             ', 'Maman               ', 'Annecy                                                                                                                                                                                                                                                 ', 'coude               ', 'coupe               ');
 INSERT INTO BOUSSANL.PARENT (NOM, PRENOM, ADRESSE, LOGIN, MDP)
-	VALUES ('Bernard             ', 'JeanMi              ', 'lyon                                                                                                                                                                                                                                                      ', 'azerty              ', '1234                ');
+	VALUES ('Bernard             ', 'JeanMi              ', 'Lyon                                                                                                                                                                                                                                                      ', 'azerty              ', '1234                ');
 INSERT INTO BOUSSANL.PARENT (NOM, PRENOM, ADRESSE, LOGIN, MDP)
-	VALUES ('Boussant            ', 'Luc                 ', 'sdfsdfsdf                                                                                                                                                                                                                                                 ', 'boussanl            ', '123                 ');
+	VALUES ('Boussant            ', 'Luc                 ', 'Avignon                                                                                                                                                                                                                                                 ', 'boussanl            ', '123                 ');
 INSERT INTO BOUSSANL.PARENT (NOM, PRENOM, ADRESSE, LOGIN, MDP)
-	VALUES ('vador               ', 'dark                ', 'death star                                                                                                                                                                                                                                                ', 'vadordark           ', 'vadordark           ');
+	VALUES ('Vador              ', 'Dark                ', 'Death Star                                                                                                                                                                                                                                                ', 'vadordark           ', 'vadordark           ');
 
 CREATE TABLE PERIODE (DATEDEBUT CHAR(50) NOT NULL, DATEFIN CHAR(50) NOT NULL, PRIMARY KEY (DATEDEBUT, DATEFIN));
 INSERT INTO BOUSSANL.PERIODE (DATEDEBUT, DATEFIN)
@@ -102,7 +102,7 @@ INSERT INTO BOUSSANL.REGIMES (REGIME)
 INSERT INTO BOUSSANL.REGIMES (REGIME)
 	VALUES ('vegan               ');
 INSERT INTO BOUSSANL.REGIMES (REGIME)
-	VALUES ('que du domac        ');
+	VALUES ('que du macdo        ');
 
 CREATE TABLE USERS (LOGIN VARCHAR2(10) NOT NULL, PASSWORD VARCHAR2(100) NOT NULL, VILLE CHAR(3) NOT NULL, PRIMARY KEY (LOGIN));
 INSERT INTO BOUSSANL.USERS (LOGIN, PASSWORD, VILLE)
