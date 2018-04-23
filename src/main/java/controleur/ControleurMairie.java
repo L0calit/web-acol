@@ -17,6 +17,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import javax.sql.DataSource;
 import modele.Activite;
+import modele.FicheAccompagnateur;
 import modele.FicheEnfant;
 import modele.FicheParent;
 import modele.Garderie;
@@ -105,12 +106,31 @@ public class ControleurMairie extends HttpServlet {
                     request.logout();
                     response.sendRedirect("index.jsp");
                     break;
+                case "accompagnateurAjouter":
+                    actionAjouterAccompagnateur(request, accompagnateurDAO);
+                    break;
+                case "accompagnateurSupprimer":
+                    accompagnateurDAO.supprimerAccompagnateur(request.getParameter("mail"));
+                    break;
                 default:
                     break;
             }
             actualiserPage(request, response, regimeDAO, activiteDAO, accompagnateurDAO, periodeDAO);
         } catch (DAOException e) {
             erreurBD(request, response, e);
+        }
+    }
+    
+    public void actionAjouterAccompagnateur(HttpServletRequest request, 
+            AccompagnateurDAO accompagnateurDAO) throws DAOException {
+        String prenom = request.getParameter("prenom");
+        String numeroTel = request.getParameter("numeroTel");
+        String mail = request.getParameter("mail");
+        String nom = request.getParameter("nom");
+        if (accompagnateurDAO.existeDeja(mail)) {
+            request.setAttribute("mailUtiliser", true);
+        } else {
+            accompagnateurDAO.ajouterAccompagnateur(nom, prenom, mail, numeroTel);
         }
     }
 
@@ -382,6 +402,8 @@ public class ControleurMairie extends HttpServlet {
         List<Activite> activites = activiteDAO.getListeActivite();
         List<String> accompagnateurs = accompagnateurDAO.getListEmail();
         List<Periode> periodes = periodeDAO.getPeriodes();
+        List<FicheAccompagnateur> accoms = accompagnateurDAO.getListe();
+        request.setAttribute("accoms", accoms);
         request.setAttribute("estEnCours", periodeEncours(periodes));
         request.setAttribute("regimes", regimes);
         request.setAttribute("activites", activites);
