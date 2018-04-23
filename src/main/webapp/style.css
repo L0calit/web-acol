@@ -10,68 +10,68 @@ and open the template in the editor.
 
 
 h1 {
- text-align: center;
- }
- h2 {
- text-align: center;
- }
+    text-align: center;
+}
+h2 {
+    text-align: center;
+}
 h4 {
- text-align: center;
- }
+    text-align: center;
+}
 #log{
-     padding:0px;
-     background-color:blanchedalmond;
-     border: solid yellow;
-     border-radius: 5px;
-     margin: 10px;
-     text-align:center;
- }
- ul {
+    padding:0px;
+    background-color:blanchedalmond;
+    border: solid yellow;
+    border-radius: 5px;
+    margin: 10px;
+    text-align:center;
+}
+ul {
     list-style-type: none;
     padding:0px;
- }
- body{
-     background-color: #CCFFF8!important;
-     font-family: 'Raleway', sans-serif!important;
- }
- #main_title{
-     margin-top: 5%;
- }
- #index{
-     margin-top: 15%;
- }
- #activite{
-     margin:10px;
- }
- #container_parent{
- }
- 
- #container_activite{
- }
- #enfant{
- }
- #parent{
- }
- #facture{
- }
- #logout:hover{
-     background-color: red;
- }
- 
- .theme_classique{
-     background-color:blanchedalmond !important;
-     border: solid yellow;
-     border-radius: 15px; 
-     padding-top:20px;
-     padding-bottom:20px;
-     padding-left:20px;
-     padding-right:20px;
-     margin:20px;
- }
- .page_activité{
-     margin: 20px;
- }
- 
- .centrer{
+}
+body{
+    background-color: #CCFFF8!important;
+    font-family: 'Raleway', sans-serif!important;
+}
+#main_title{
+    margin-top: 5%;
+}
+#index{
+    margin-top: 15%;
+}
+#activite{
+    margin:10px;
+}
+#container_parent{
+}
+
+#container_activite{
+}
+#enfant{
+}
+#parent{
+}
+#facture{
+}
+#logout:hover{
+    background-color: red;
+}
+
+.theme_classique{
+    background-color:blanchedalmond !important;
+    border: solid yellow;
+    border-radius: 15px; 
+    padding-top:20px;
+    padding-bottom:20px;
+    padding-left:20px;
+    padding-right:20px;
+    margin:20px;
+}
+.page_activité{
+    margin: 20px;
+}
+
+.centrer{
     align: center;
- }
+}

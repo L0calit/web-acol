@@ -18,13 +18,13 @@
     </head>
     <body>
         <div id="container_enfant" class="container">
-           <div id="enfant" class="row theme_classique">
-               <div class="col">
-                   <div class="row">
-                       <h1>Informations de l'enfant - ${ficheEnfant.getPrenom()} ${ficheEnfant.getNom()}</h1>             
-                   </div>
-                   <div class="row">
-                       <ul>
+            <div id="enfant" class="row theme_classique">
+                <div class="col">
+                    <div class="row">
+                        <h1>Informations de l'enfant - ${ficheEnfant.getPrenom()} ${ficheEnfant.getNom()}</h1>             
+                    </div>
+                    <div class="row">
+                        <ul>
                             <li><b>Nom : </b>${ficheEnfant.getNom()}</li>
                             <li><b>Prenom : </b>${ficheEnfant.getPrenom()}</li>
                             <li><b>Sexe : </b>${ficheEnfant.getSexe()}</li>
@@ -33,15 +33,15 @@
                             <li><b>Cantine : </b>${ficheEnfant.getCantine().toString()}</li>
                             <li><b>Date de Naissance : </b>${ficheEnfant.getDateNaissance()}</li>
                             <li><b>Divers : </b>${ficheEnfant.getDivers()}</li>
-                       </ul>
-                   </div>
-                   <div class="row">
+                        </ul>
+                    </div>
+                    <div class="row">
                         <table class="table table-bordered table-hover">
-                             <thead class="thead-light">
+                            <thead class="thead-light">
                                 <tr>
-                                  <th scope="col">Activité demandée pour la prochaine période</th>
+                                    <th scope="col">Activité demandée pour la prochaine période</th>
                                 </tr>
-                             </thead>
+                            </thead>
                             <c:forEach items="${activites}" var="activite">
                                 <c:if test="${activite.getPeriode().estEnCours() == false}">
                                     <tr>
@@ -54,33 +54,33 @@
                     </div>
                     <div class="row">
                         <table class="table table-bordered table-hover">
-                             <thead class="thead-light">
+                            <thead class="thead-light">
                                 <tr>
-                                  <th scope="col">Activité reservée pour la période en cours</th>
-                                  <th scope="col">Annulation pour la prochaine séance 48h en avance</th>
+                                    <th scope="col">Activité reservée pour la période en cours</th>
+                                    <th scope="col">Annulation pour la prochaine séance 48h en avance</th>
                                 </tr>
-                             </thead>
+                            </thead>
                             <c:forEach items="${activites}" var="activite">
                                 <c:if test="${activite.getPeriode().estEnCours() == true}">
                                     <tr>
                                         <td>${activite}</td>
                                         <td><a href="controleurParent?action=activiteAbsent&prenomEnfant=${ficheEnfant.getPrenom().trim()}&loginParent=${loginParent.trim()}&nomActivite=${activite.getNom()}&creneauxJour=${activite.getCreneauxJour()}&creneauxHeure=${activite.getCreneauxHeure()}"><input type="button"value="Ne peux être présent"></a></td>
                                     </tr>     
-                                     <c:if test="${delai48h == true}">
-                                              <div style="color:red;">
-                                                  Il est trop tard pour annuler cette séance 
-                                              </div>
-                                     </c:if>
-                                     <c:if test="${annule == true}">
-                                              <div style="color:red;">
-                                                  La séance a été annuler correctement 
-                                              </div>
-                                     </c:if>
-                                     <c:if test="${dejaAnnule == true}">
-                                              <div style="color:red;">
-                                                  Vous avez déjà annuler cette séance 
-                                              </div>
-                                     </c:if>                                    
+                                    <c:if test="${delai48h == true}">
+                                        <div style="color:red;">
+                                            Il est trop tard pour annuler cette séance 
+                                        </div>
+                                    </c:if>
+                                    <c:if test="${annule == true}">
+                                        <div style="color:red;">
+                                            La séance a été annulée correctement 
+                                        </div>
+                                    </c:if>
+                                    <c:if test="${dejaAnnule == true}">
+                                        <div style="color:red;">
+                                            Vous avez déjà annulé cette séance 
+                                        </div>
+                                    </c:if>                                    
                                 </c:if>
                             </c:forEach>                   
                         </table>
@@ -96,24 +96,24 @@
                             <input type="hidden" name="loginParent" value="${loginParent}" />
                         </form>
                     </div>
-                        <div class="row">
-                            <table class="table table-bordered table-hover">
-                                <thead class="thead-light">
+                    <div class="row">
+                        <table class="table table-bordered table-hover">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">Garderie réservé pour la période en cours</th>
+                                    <th scope="col">Annulation de la garderie</th>
+                                </tr>
+                            </thead>
+                            <c:forEach items="${garderies}" var="garderie">
+                                <c:if test="true">
                                     <tr>
-                                        <th scope="col">Garderie réservé pour la période en cours</th>
-                                        <th scope="col">Annulation de la garderie</th>
-                                    </tr>
-                                </thead>
-                                <c:forEach items="${garderies}" var="garderie">
-                                    <c:if test="true">
-                                        <tr>
-                                            <td>${garderie.getCreneauxJour()} à ${garderie.getCreneauxHeure()}</td>
-                                            <td><a href="controleurParent?action=garderieSupprimer&prenomEnfant=${ficheEnfant.getPrenom().trim()}&loginParent=${loginParent.trim()}&creneauxJour=${garderie.getCreneauxJour()}&creneauxHeure=${garderie.getCreneauxHeure()}"><input type="button"value="supprimer"></a></td>
-                                        </tr>                                    
-                                    </c:if>
-                                </c:forEach>         
-                            </table>
-                        </div>
+                                        <td>${garderie.getCreneauxJour()} à ${garderie.getCreneauxHeure()}</td>
+                                        <td><a href="controleurParent?action=garderieSupprimer&prenomEnfant=${ficheEnfant.getPrenom().trim()}&loginParent=${loginParent.trim()}&creneauxJour=${garderie.getCreneauxJour()}&creneauxHeure=${garderie.getCreneauxHeure()}"><input type="button"value="supprimer"></a></td>
+                                    </tr>                                    
+                                </c:if>
+                            </c:forEach>         
+                        </table>
+                    </div>
                     <div class="row">
                         <form method="get" action="controleurParent">
                             <table border="1" class="table table-bordered">
@@ -160,8 +160,8 @@
                             <input type="hidden" name="loginParent" value="${loginParent}" />
                         </form>
                     </div>
-               </div>
-           </div>
+                </div>
+            </div>
         </div>
         <div class="container">    
             <div class="row">

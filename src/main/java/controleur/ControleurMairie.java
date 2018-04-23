@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package controleur;
 
 import dao.AbsenceDAO;
@@ -38,41 +33,42 @@ public class ControleurMairie extends HttpServlet {
 
     /**
      * Permet de gérer le cas si les paramètres donnés ne sont pas correctes
+     *
      * @param request
      * @param response
      * @throws ServletException
-     * @throws IOException 
+     * @throws IOException
      */
     private void invalidParameters(HttpServletRequest request,
             HttpServletResponse response) throws ServletException, IOException {
-        request.getRequestDispatcher("/WEB-INF/controleurErreur.jsp").forward(request, response);        
+        request.getRequestDispatcher("/WEB-INF/controleurErreur.jsp").forward(request, response);
     }
 
     /**
      * Permet de gérer le cas où il y a eu une erreur avec la base de données
+     *
      * @param request
      * @param response
      * @param e
      * @throws ServletException
-     * @throws IOException 
+     * @throws IOException
      */
     private void erreurBD(HttpServletRequest request,
-                HttpServletResponse response, DAOException e)
+            HttpServletResponse response, DAOException e)
             throws ServletException, IOException {
         e.printStackTrace(); // permet d’avoir le détail de l’erreur dans catalina.out
         request.setAttribute("erreurMessage", e.getMessage());
         request.getRequestDispatcher("/WEB-INF/bdErreur.jsp").forward(request, response);
     }
-  
+
     /**
-     * Actions possibles en GET :
-     *  Ajouter ou supprimer un regime
-     *  Ajouter ou supprimer une activité
-     *  Ajouter ou supprimer une période
+     * Actions possibles en GET : Ajouter ou supprimer un regime Ajouter ou
+     * supprimer une activité Ajouter ou supprimer une période
+     *
      * @param request
      * @param response
      * @throws IOException
-     * @throws ServletException 
+     * @throws ServletException
      */
     @Override
     public void doGet(HttpServletRequest request,
@@ -85,30 +81,44 @@ public class ControleurMairie extends HttpServlet {
         AccompagnateurDAO accompagnateurDAO = new AccompagnateurDAO(ds);
         PeriodeDAO periodeDAO = new PeriodeDAO(ds);
         try {
-            if (action.equals("regimeSupprimer")) {
-                regimeDAO.supprimerRegime(request.getParameter("regime"));
-            } else if (action.equals("regimeAjouter")) {
-                actionAjouterRegime(request, regimeDAO);
-            } else if (action.equals("activiteAjouter")) {
-                actionAjouterActivite(request, activiteDAO);
-            } else if (action.equals("activiteSupprimer")) {
-                activiteDAO.supprimerActivite(request.getParameter("actiNom"), 
-                        request.getParameter("actiJour"), request.getParameter("actiHeure"));
-            } else if (action.equals("periodeSupprimer")) {
-                periodeDAO.supprimerPeriode(request.getParameter("dateDebut"), request.getParameter("dateFin"));
-            } else if (action.equals("periodeAjouter")) {
-                actionAjouterPeriode(request, periodeDAO);
-            } else if (action.equals("logout")) {
-                request.logout();
-                response.sendRedirect("index.jsp");
+            switch (action) {
+                case "regimeSupprimer":
+                    regimeDAO.supprimerRegime(request.getParameter("regime"));
+                    break;
+                case "regimeAjouter":
+                    actionAjouterRegime(request, regimeDAO);
+                    break;
+                case "activiteAjouter":
+                    actionAjouterActivite(request, activiteDAO);
+                    break;
+                case "activiteSupprimer":
+                    activiteDAO.supprimerActivite(request.getParameter("actiNom"),
+                            request.getParameter("actiJour"), request.getParameter("actiHeure"));
+                    break;
+                case "periodeSupprimer":
+                    periodeDAO.supprimerPeriode(request.getParameter("dateDebut"), request.getParameter("dateFin"));
+                    break;
+                case "periodeAjouter":
+                    actionAjouterPeriode(request, periodeDAO);
+                    break;
+                case "logout":
+                    request.logout();
+                    response.sendRedirect("index.jsp");
+                    break;
+                default:
+                    break;
             }
             actualiserPage(request, response, regimeDAO, activiteDAO, accompagnateurDAO, periodeDAO);
         } catch (DAOException e) {
             erreurBD(request, response, e);
         }
     }
-    
-    public void testMiseAJourBDD() {
+
+    /**
+     * Permet le controle de la base de donnée avant chaque connexion pour
+     * savoir si on vient de finir une periode ou si on a une periode en cours
+     */
+    public void testMiseAJourBDD() throws DAOException {
         PeriodeDAO periodeDAO = new PeriodeDAO(ds);
         ActiviteDAO activiteDAO = new ActiviteDAO(ds);
         AbsenceDAO absenceDAO = new AbsenceDAO(ds);
@@ -117,28 +127,33 @@ public class ControleurMairie extends HttpServlet {
             if (periode.estFini()) {
                 // On calcule toutes les factures
                 calculeFacture(periode);
-                
+
                 // On supprime toutes les activites de cette periode
                 // On supprime toutes les reservations de cette periode
                 activiteDAO.finPeriode(periode);
 
                 // On supprime la periode
                 periodeDAO.supprimerPeriode(periode.debutToString(), periode.finToString());
-                
+
                 // On supprime toutes les absences
                 absenceDAO.finPeriode();
             } else if (periode.estEnCours()) {
                 List<Activite> activites = activiteDAO.getListeActivite(periode);
                 for (Activite activite : activites) {
                     int effectifMax = activite.getEffectif();
-                    activiteDAO.miseAJour(effectifMax, activite.getNom(),activite.getCreneauxJour(), activite.getCreneauxHeure());
+                    activiteDAO.miseAJour(effectifMax, activite.getNom(), activite.getCreneauxJour(), activite.getCreneauxHeure());
                 }
             }
-            
+
         }
     }
-    
-    public void calculeFacture(Periode periode) {
+
+    /**
+     * Permet de calculer la facture pour chacun des parents
+     *
+     * @param periode
+     */
+    public void calculeFacture(Periode periode) throws DAOException {
         ParentDAO parentDAO = new ParentDAO(ds);
         FactureDAO factureDAO = new FactureDAO(ds);
         ActiviteDAO activiteDAO = new ActiviteDAO(ds);
@@ -164,16 +179,17 @@ public class ControleurMairie extends HttpServlet {
             }
             int montantFinal = prixTotal - montantEnlever;
             factureDAO.ajoutFacture(loginParent, periode.debutToString(), periode.finToString(), prixTotal, montantEnlever, montantFinal);
-        }        
+        }
     }
-    
+
     /**
      * Permet l'ajout de la période à la base de données tout en vérifiant que
      * les données sont correctes
+     *
      * @param request
-     * @param periodeDAO 
+     * @param periodeDAO
      */
-    public void actionAjouterPeriode(HttpServletRequest request, PeriodeDAO periodeDAO) {
+    public void actionAjouterPeriode(HttpServletRequest request, PeriodeDAO periodeDAO) throws DAOException {
         // Verifier que la date de début est avant la date de fin 
         // Verifier que la periode n'existe pas deja
         Periode periodeAjouter = new Periode(request.getParameter("dateDebut"), request.getParameter("dateFin"));
@@ -188,45 +204,47 @@ public class ControleurMairie extends HttpServlet {
             periodeDAO.ajouterPeriode(periodeAjouter.debutToString(), periodeAjouter.finToString());
         }
     }
-    
+
     /**
      * Permet l'ajout d'une activité à la base de données
+     *
      * @param request
-     * @param activiteDAO 
+     * @param activiteDAO
      */
-    public void actionAjouterActivite(HttpServletRequest request, ActiviteDAO activiteDAO) {
+    public void actionAjouterActivite(HttpServletRequest request, ActiviteDAO activiteDAO) throws DAOException {
         if (request.getParameter("mail1").equals(request.getParameter("mail2"))) {
             request.setAttribute("SameAccompagnateur", "1");
-        }
-        else if (activiteDAO.existeDeja(request.getParameter("nom"), request.getParameter("jour"), request.getParameter("horaire"))) {
+        } else if (activiteDAO.existeDeja(request.getParameter("nom"), request.getParameter("jour"), request.getParameter("horaire"))) {
             request.setAttribute("SameActivity", "1");
-        } else  {
+        } else {
             String classes = parseClass(request);
             String periode = request.getParameter("periode");
-            activiteDAO.ajouterActivite(request.getParameter("nom"), 
+            activiteDAO.ajouterActivite(request.getParameter("nom"),
                     request.getParameter("jour"), request.getParameter("horaire"),
                     classes, Integer.parseInt(request.getParameter("prix")),
                     Integer.parseInt(request.getParameter("effectif")), request.getParameter("mail1"),
                     request.getParameter("mail2"), periode.split("-->")[0], periode.split("-->")[1]);
-        }        
+        }
     }
-    
+
     /**
      * Permet l'ajout d'un régime à la base données
+     *
      * @param request
-     * @param regimeDAO 
+     * @param regimeDAO
      */
-    public void actionAjouterRegime(HttpServletRequest request, RegimeDAO regimeDAO) {
+    public void actionAjouterRegime(HttpServletRequest request, RegimeDAO regimeDAO) throws DAOException {
         if (regimeDAO.existeDeja(request.getParameter("regime"))) {
             request.setAttribute("SameRegime", "1");
         } else {
             regimeDAO.ajouterRegime(request.getParameter("regime"));
         }
     }
-    
+
     /**
      * Actions possibles en POST : Connexion à son espace personelle mairie,
-     *  Création d'un compte mairie
+     * Création d'un compte mairie
+     *
      * @param request
      * @param response
      * @throws java.io.IOException
@@ -250,7 +268,7 @@ public class ControleurMairie extends HttpServlet {
             } else if (action.equals("connexion")) {
                 testMiseAJourBDD();
                 actionConnexion(request, response, employeDAO);
-            }else if (action.equals("creationCompteMairie")) {
+            } else if (action.equals("creationCompteMairie")) {
                 actionCreationMairie(request, response, employeDAO);
             }
             actualiserPage(request, response, regimeDAO, activiteDAO, accompagnateurDAO, periodeDAO);
@@ -258,52 +276,54 @@ public class ControleurMairie extends HttpServlet {
             erreurBD(request, response, e);
         }
     }
-    
-    
+
     /**
-     * Verifie que les données rentrés correspondent à un compte mairie
-     * puis affiche l'espace personnel si le login, mot de passe sont bons
+     * Verifie que les données rentrés correspondent à un compte mairie puis
+     * affiche l'espace personnel si le login, mot de passe sont bons
+     *
      * @param request
      * @param response
      * @param employeDAO
      * @throws IOException
-     * @throws ServletException 
+     * @throws ServletException
      */
     public void actionConnexion(HttpServletRequest request, HttpServletResponse response,
-            EmployeDAO employeDAO) throws IOException, ServletException{
+            EmployeDAO employeDAO) throws IOException, ServletException, DAOException {
         String login = request.getParameter("login");
         String mdp = request.getParameter("password");
         if (employeDAO.verify(login, mdp)) {
-            request.setAttribute("login",login);
+            request.setAttribute("login", login);
         } else {
             request.setAttribute("erreurLoginMairie", "1");
             request.getRequestDispatcher("/index.jsp").forward(request, response);
         }
     }
-    
+
     /**
-     * Crée un compte mairie en plus et le garde en mémoire dans la base de données
+     * Crée un compte mairie en plus et le garde en mémoire dans la base de
+     * données
+     *
      * @param request
      * @param response
      * @param employeDAO
      * @throws IOException
-     * @throws ServletException 
+     * @throws ServletException
      */
     public void actionCreationMairie(HttpServletRequest request, HttpServletResponse response,
-            EmployeDAO employeDAO) throws IOException, ServletException{
-        if(!request.getParameter("password1").equals(request.getParameter("password2"))){
+            EmployeDAO employeDAO) throws IOException, ServletException, DAOException {
+        if (!request.getParameter("password1").equals(request.getParameter("password2"))) {
             request.setAttribute("differentPassword", "1");
             request.getRequestDispatcher("/WEB-INF/mairie.jsp").forward(request, response);
-        }
-        else if(employeDAO.verifyLogin(request.getParameter("login"))){
+        } else if (employeDAO.verifyLogin(request.getParameter("login"))) {
             request.setAttribute("loginUsed", "1");
             request.getRequestDispatcher("/WEB-INF/mairie.jsp").forward(request, response);
         }
         employeDAO.creation(request.getParameter("login"), request.getParameter("password1"));
     }
-    
+
     /**
-     * Permet de récuperer toutes les classes choisies par l'utilisateur 
+     * Permet de récuperer toutes les classes choisies par l'utilisateur
+     *
      * @param request
      * @return Un string avec les classes autorisés
      */
@@ -335,15 +355,16 @@ public class ControleurMairie extends HttpServlet {
         }
         if (classes.equals("")) {
             classes = "0";
-        }
-        else {
-            classes = classes.substring(0, classes.length()-1);
+        } else {
+            classes = classes.substring(0, classes.length() - 1);
         }
         return classes;
     }
-    
+
     /**
-     * Permet d'actualiser la page avec toutes les informations mises dans les paramètres
+     * Permet d'actualiser la page avec toutes les informations mises dans les
+     * paramètres
+     *
      * @param request
      * @param response
      * @param regimeDAO
@@ -351,12 +372,12 @@ public class ControleurMairie extends HttpServlet {
      * @param accompagnateurDAO
      * @param periodeDAO
      * @throws IOException
-     * @throws ServletException 
+     * @throws ServletException
      */
     public void actualiserPage(HttpServletRequest request,
-            HttpServletResponse response, RegimeDAO regimeDAO, ActiviteDAO activiteDAO, 
+            HttpServletResponse response, RegimeDAO regimeDAO, ActiviteDAO activiteDAO,
             AccompagnateurDAO accompagnateurDAO, PeriodeDAO periodeDAO)
-            throws IOException, ServletException {
+            throws IOException, ServletException, DAOException {
         List<String> regimes = regimeDAO.getListeRegime();
         List<Activite> activites = activiteDAO.getListeActivite();
         List<String> accompagnateurs = accompagnateurDAO.getListEmail();
@@ -364,11 +385,17 @@ public class ControleurMairie extends HttpServlet {
         request.setAttribute("estEnCours", periodeEncours(periodes));
         request.setAttribute("regimes", regimes);
         request.setAttribute("activites", activites);
-        request.setAttribute("accompagnateurs", accompagnateurs);     
+        request.setAttribute("accompagnateurs", accompagnateurs);
         request.setAttribute("periodes", periodes);
         request.getRequestDispatcher("/WEB-INF/mairie.jsp").forward(request, response);
     }
-    
+
+    /**
+     * Permet de savoir si une periode est en cours ou non
+     *
+     * @param periodes
+     * @return True si une periode est en cours, false sinon
+     */
     public boolean periodeEncours(List<Periode> periodes) {
         for (Periode periode : periodes) {
             if (periode.estEnCours()) {
@@ -379,4 +406,3 @@ public class ControleurMairie extends HttpServlet {
     }
 
 }
-
