@@ -699,32 +699,6 @@ public class ControleurParent extends HttpServlet {
                     test = true;
                 }
             }
-<<<<<<< HEAD
-            actualiserPageEnfant(request, response, loginParent, prenomEnfant);
-        } else if (action.equals("voirFacture")) {
-            String dateDebut = request.getParameter("factureDateDebut");
-            String dateFin = request.getParameter("factureDateFin");
-            String loginParent = request.getParameter("loginParent");
-            FactureDAO factureDAO = new FactureDAO(ds);
-            ParentDAO parentDAO = new ParentDAO(ds);
-            Facture facture = factureDAO.getFacture(loginParent, dateDebut, dateFin);
-            FicheParent ficheParent = parentDAO.getFicheParent(loginParent);
-            String nomParent = ficheParent.getNom();
-            String prenomParent = ficheParent.getPrenom();
-            request.setAttribute("facture", facture);
-            request.setAttribute("nomParent", nomParent);
-            request.setAttribute("prenomParent", prenomParent);
-            request.getRequestDispatcher("WEB-INF/vueFacture.jsp").forward(request, response);
-        } else if (action.equals("garderieSupprimer")) {
-            String loginParent = request.getParameter("loginParent");
-            String prenom = request.getParameter("prenomEnfant");
-            ActiviteDAO activiteDAO = new ActiviteDAO(ds);
-            String creneauxJour = request.getParameter("creneauxJour");
-            String creneauxHeure = request.getParameter("creneauxHeure");
-            activiteDAO.supprimerActivite(prenom, loginParent, "Garderie", creneauxJour, creneauxHeure);
-            actualiserPageEnfant(request, response, loginParent, prenom);
-=======
->>>>>>> f20e5d5f6fadcc6fb7edaa55783d443f639b16ef
         }
         return test;
     }
