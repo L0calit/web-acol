@@ -510,8 +510,14 @@ public class ControleurParent extends HttpServlet {
             String dateFin = request.getParameter("factureDateFin");
             String loginParent = request.getParameter("loginParent");
             FactureDAO factureDAO = new FactureDAO(ds);
+            ParentDAO parentDAO = new ParentDAO(ds);
             Facture facture = factureDAO.getFacture(loginParent, dateDebut, dateFin);
+            FicheParent ficheParent = parentDAO.getFicheParent(loginParent);
+            String nomParent = ficheParent.getNom();
+            String prenomParent = ficheParent.getPrenom();
             request.setAttribute("facture", facture);
+            request.setAttribute("nomParent", nomParent);
+            request.setAttribute("prenomParent", prenomParent);
             request.getRequestDispatcher("WEB-INF/vueFacture.jsp").forward(request, response);
         } else if (action.equals("garderieSupprimer")) {
             String loginParent = request.getParameter("loginParent");

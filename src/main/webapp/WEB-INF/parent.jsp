@@ -73,18 +73,28 @@
                     </div>
                 </div>  
             </div>
-            <div id="facture" class="row theme_classique">    
-                <h4>Historique des factures<h4> <br>
+            <div id="facture" class="row theme_classique"> 
+                <div class="col">
+                    <div class="row">
+                        <h4>Historique des factures<h4>
                 <!-- Afficher l'historique des factures + bouton
                         cliquable pour voir une certaine facture-->
+                    </div>
                     <div class="row">
-                        <table>
+                        <table class="table table-bordered table-hover">
+                          <thead class="thead-light">    
+                            <tr>
+                              <th>Facture pour la période :</th>
+                            </tr>
+                          </thead>
+                          <tbody>
                             <c:forEach items="${factures}" var="facture">
                                 <tr>
                                     <td>${facture.getPeriode().debutToString()} --> ${facture.getPeriode().finToString()}</td>
                                     <td><a href="controleurParent?action=voirFacture&loginParent=${parent.getLogin()}&factureDateDebut=${facture.getPeriode().debutToString()}&factureDateFin=${facture.getPeriode().finToString()}" target="_blank"><input type="button"value="Voir facture"</a></td>
                                 </tr>
-                            </c:forEach>                   
+                            </c:forEach>
+                          </tbody>
                         </table>
                     </div>
             </div>
