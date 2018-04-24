@@ -411,9 +411,15 @@ public class ControleurParent extends HttpServlet {
         String dateDebut = request.getParameter("factureDateDebut");
         String dateFin = request.getParameter("factureDateFin");
         String loginParent = request.getParameter("loginParent");
+        ParentDAO parentDAO = new ParentDAO(ds);
+        FicheParent ficheParent = parentDAO.getFicheParent(loginParent);
+        String nomParent = ficheParent.getNom();
+        String prenomParent = ficheParent.getPrenom();
         FactureDAO factureDAO = new FactureDAO(ds);
         Facture facture = factureDAO.getFacture(loginParent, dateDebut, dateFin);
         request.setAttribute("facture", facture);
+        request.setAttribute("nomParent", nomParent);
+        request.setAttribute("prenomParent", prenomParent);
         request.getRequestDispatcher("WEB-INF/vueFacture.jsp").forward(request, response);
     }
 
